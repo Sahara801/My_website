@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart To-Do List with Reminders</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Main Container -->
+  <div class="app-container">
+    
+    <!-- 1. Header Section: Title and Current Date -->
+    <header class="app-header">
+      <div class="header-content">
+        <h1>📝 My To-Do List</h1>
+        <p id="current-date" class="date-text">Today's Date</p>
+      </div>
+      <!-- Notification permission toggle button -->
+      <button id="notification-btn" class="btn-secondary" title="Enable browser notifications for reminders">
+        🔔 Enable Alerts
+      </button>
+    </header>
+
+    <!-- 2. Progress & Statistics Bar: Shows Total, Remaining, and Completed counts -->
+    <section class="stats-section">
+      <div class="stat-card">
+        <span class="stat-number" id="total-count">0</span>
+        <span class="stat-label">Total</span>
+      </div>
+      <div class="stat-card active-card">
+        <span class="stat-number" id="remaining-count">0</span>
+        <span class="stat-label">Remaining</span>
+      </div>
+      <div class="stat-card done-card">
+        <span class="stat-number" id="completed-count">0</span>
+        <span class="stat-label">Done</span>
+      </div>
+      
+      <!-- Progress Bar (Visual representation of completed tasks) -->
+      <div class="progress-container">
+        <div class="progress-bar-bg">
+          <div id="progress-bar" class="progress-bar-fill" style="width: 0%;"></div>
+        </div>
+        <span id="progress-text" class="progress-text">0% Completed</span>
+      </div>
+    </section>
+
+    <!-- 3. Add Task Form: Inputs for task title, reminder date/time, and priority -->
+    <form id="todo-form" class="todo-form">
+      <div class="input-row">
+        <input 
+          type="text" 
+          id="task-input" 
+          placeholder="What do you need to do? (e.g., Study JavaScript)" 
+          required 
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="options-row">
+        <!-- Reminder Date & Time Picker -->
+        <div class="option-field">
+          <label for="reminder-input">⏰ Reminder / Due:</label>
+          <input type="datetime-local" id="reminder-input" />
+        </div>
+
+        <!-- Priority Selector -->
+        <div class="option-field">
+          <label for="priority-select">⚡ Priority:</label>
+          <select id="priority-select">
+            <option value="normal">Normal</option>
+            <option value="high">High</option>
+            <option value="low">Low</option>
+          </select>
+        </div>
+
+        <!-- Add Button -->
+        <button type="submit" class="btn-primary" id="add-btn">
+          ➕ Add Task
+        </button>
+      </div>
+    </form>
+
+    <!-- 4. Filter & Action Toolbar: Switch between All, Remaining, and Done -->
+    <div class="toolbar">
+      <div class="filter-tabs">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="remaining">Remaining</button>
+        <button class="filter-btn" data-filter="completed">Done</button>
+      </div>
+      <button id="clear-completed-btn" class="btn-danger-outline" title="Remove all finished tasks">
+        🗑️ Clear Done
+      </button>
+    </div>
+
+    <!-- 5. The Task List (Dynamic: populated by JavaScript) -->
+    <ul id="task-list" class="task-list">
+      <!-- JavaScript will create <li> items here automatically -->
+    </ul>
+
+    <!-- 6. Empty State Message (shown when no tasks exist) -->
+    <div id="empty-state" class="empty-state">
+      <p class="empty-icon">🎯</p>
+      <p class="empty-text">No tasks here! Add a task above to get started.</p>
+    </div>
+
+  </div>
+
+  <!-- 7. Audio Reminder Toast Popup (Triggered when a reminder is due) -->
+  <div id="reminder-toast" class="reminder-toast hidden">
+    <div class="toast-content">
+      <span class="toast-icon">⏰</span>
+      <div class="toast-text">
+        <strong id="toast-title">Task Reminder!</strong>
+        <p id="toast-message">It's time to complete your task.</p>
+      </div>
+      <button id="toast-close" class="toast-close-btn">&times;</button>
+    </div>
+  </div>
+
+  <!-- Connect the JavaScript logic -->
+  <script src="script.js"></script>
+</body>
+</html>

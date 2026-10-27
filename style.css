@@ -1,0 +1,573 @@
+/* ========================================================
+   CSS STYLESHEET FOR TO-DO LIST APPLICATION
+   Beginner-friendly structure with comments explaining each section!
+   ======================================================== */
+
+/* --------------------------------------------------------
+   1. CSS VARIABLES (Theme Colors and Spacing)
+   Variables make it easy to change colors across the whole site.
+   -------------------------------------------------------- */
+:root {
+  --primary-color: #4f46e5;       /* Indigo */
+  --primary-hover: #4338ca;
+  --success-color: #10b981;       /* Emerald Green */
+  --warning-color: #f59e0b;       /* Amber */
+  --danger-color: #ef4444;        /* Rose Red */
+  --danger-hover: #dc2626;
+  --bg-color: #f3f4f6;            /* Light gray background */
+  --card-bg: #ffffff;             /* White container */
+  --text-main: #1f2937;           /* Dark gray for readability */
+  --text-muted: #6b7280;          /* Subtle gray for dates and labels */
+  --border-color: #e5e7eb;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+/* --------------------------------------------------------
+   2. GLOBAL RESET & BASE STYLES
+   Ensures consistent sizing and typography across all browsers.
+   -------------------------------------------------------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* Makes padding & borders stay inside total width */
+}
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: linear-gradient(135deg, #e0e7ff 0%, #f3f4f6 100%);
+  color: var(--text-main);
+  min-height: 100vh;
+  padding: 24px 16px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* --------------------------------------------------------
+   3. MAIN APPLICATION CONTAINER (Card)
+   Centers everything in a neat card with soft shadow.
+   -------------------------------------------------------- */
+.app-container {
+  background-color: var(--card-bg);
+  width: 100%;
+  max-width: 650px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 28px;
+  margin: 20px auto;
+  border: 1px solid var(--border-color);
+}
+
+/* --------------------------------------------------------
+   4. HEADER SECTION
+   App title and notification permission button.
+   -------------------------------------------------------- */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.app-header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.date-text {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* --------------------------------------------------------
+   5. BUTTON STYLES
+   Reusable button designs (Primary, Secondary, Outline, Danger).
+   -------------------------------------------------------- */
+button {
+  font-family: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease-in-out;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: #ffffff;
+  padding: 10px 18px;
+  font-weight: 600;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background-color: #f3f4f6;
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  padding: 8px 12px;
+  font-weight: 500;
+}
+
+.btn-secondary:hover {
+  background-color: #e5e7eb;
+}
+
+.btn-danger-outline {
+  background-color: transparent;
+  color: var(--danger-color);
+  border: 1px solid var(--danger-color);
+  padding: 6px 12px;
+  font-size: 0.85rem;
+}
+
+.btn-danger-outline:hover {
+  background-color: var(--danger-color);
+  color: #ffffff;
+}
+
+/* --------------------------------------------------------
+   6. STATS & PROGRESS SECTION
+   Shows Total, Remaining, and Completed counts + Visual Bar.
+   -------------------------------------------------------- */
+.stats-section {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  background-color: #f8fafc;
+  padding: 16px;
+  border-radius: var(--radius-md);
+  margin-bottom: 24px;
+  border: 1px solid var(--border-color);
+}
+
+.stat-card {
+  text-align: center;
+  padding: 8px;
+  background: #ffffff;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.stat-number {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.active-card .stat-number {
+  color: var(--primary-color);
+}
+
+.done-card .stat-number {
+  color: var(--success-color);
+}
+
+/* Progress bar stretching across the 3 columns */
+.progress-container {
+  grid-column: span 3;
+  margin-top: 8px;
+}
+
+.progress-bar-bg {
+  width: 100%;
+  height: 8px;
+  background-color: #e2e8f0;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  display: block;
+  font-size: 0.8rem;
+  text-align: right;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* --------------------------------------------------------
+   7. ADD TASK FORM
+   Text box, date/time picker, priority select, and submit button.
+   -------------------------------------------------------- */
+.todo-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+  background-color: #ffffff;
+}
+
+.input-row input[type="text"] {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 1rem;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.input-row input[type="text"]:focus {
+  border-color: var(--primary-color);
+}
+
+.options-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.option-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 150px;
+}
+
+.option-field label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.option-field input,
+.option-field select {
+  padding: 9px 10px;
+  font-size: 0.85rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background-color: #fff;
+  outline: none;
+}
+
+.option-field input:focus,
+.option-field select:focus {
+  border-color: var(--primary-color);
+}
+
+/* --------------------------------------------------------
+   8. FILTER TOOLBAR
+   Tabs for All, Remaining, Done + Clear Done button.
+   -------------------------------------------------------- */
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.filter-tabs {
+  display: flex;
+  gap: 6px;
+}
+
+.filter-btn {
+  background: transparent;
+  color: var(--text-muted);
+  padding: 6px 14px;
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+}
+
+.filter-btn.active {
+  background-color: var(--primary-color);
+  color: #ffffff;
+}
+
+.filter-btn:not(.active):hover {
+  background-color: #f3f4f6;
+  color: var(--text-main);
+}
+
+/* --------------------------------------------------------
+   9. TASK LIST AND TASK ITEM STYLES
+   The list of tasks: checkbox, task title, badges, delete button.
+   -------------------------------------------------------- */
+.task-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background-color: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+  gap: 12px;
+}
+
+.task-item:hover {
+  box-shadow: var(--shadow-md);
+  border-color: #cbd5e1;
+}
+
+/* Left part: Checkbox + Text + Details */
+.task-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+/* Custom Checkbox */
+.task-checkbox {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--success-color);
+  cursor: pointer;
+}
+
+.task-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.task-title {
+  font-size: 0.95rem;
+  font-weight: 500;
+  word-break: break-word;
+  transition: color 0.2s, text-decoration 0.2s;
+}
+
+/* Completed task state (ticked) */
+.task-item.completed {
+  background-color: #f9fafb;
+  border-color: #e5e7eb;
+}
+
+.task-item.completed .task-title {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+/* Meta tags: Badges for Reminder & Priority */
+.task-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.badge {
+  font-size: 0.72rem;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.badge-priority-high {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+.badge-priority-normal {
+  background-color: #e0e7ff;
+  color: #4338ca;
+}
+
+.badge-priority-low {
+  background-color: #f3f4f6;
+  color: #4b5563;
+}
+
+.badge-reminder {
+  background-color: #fef3c7;
+  color: #b45309;
+}
+
+.badge-reminder.overdue {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* Right part: Delete Button */
+.delete-btn {
+  background: transparent;
+  color: #9ca3af;
+  font-size: 1.2rem;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  line-height: 1;
+}
+
+.delete-btn:hover {
+  color: var(--danger-color);
+  background-color: #fee2e2;
+}
+
+/* --------------------------------------------------------
+   10. EMPTY STATE
+   Shown when there are no tasks in the selected tab.
+   -------------------------------------------------------- */
+.empty-state {
+  text-align: center;
+  padding: 40px 16px;
+  color: var(--text-muted);
+}
+
+.empty-state.hidden {
+  display: none;
+}
+
+.empty-icon {
+  font-size: 2.5rem;
+  margin-bottom: 8px;
+}
+
+.empty-text {
+  font-size: 0.95rem;
+}
+
+/* --------------------------------------------------------
+   11. REMINDER TOAST POPUP (Notification in the browser)
+   -------------------------------------------------------- */
+.reminder-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background-color: #1e293b;
+  color: #ffffff;
+  padding: 16px 20px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  border-left: 5px solid var(--warning-color);
+  z-index: 9999;
+  max-width: 360px;
+  animation: slideIn 0.3s ease-out;
+}
+
+.reminder-toast.hidden {
+  display: none;
+}
+
+.toast-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.toast-icon {
+  font-size: 1.8rem;
+}
+
+.toast-text strong {
+  display: block;
+  font-size: 0.95rem;
+  margin-bottom: 2px;
+  color: #fef08a;
+}
+
+.toast-text p {
+  font-size: 0.85rem;
+  color: #cbd5e1;
+}
+
+.toast-close-btn {
+  background: transparent;
+  color: #94a3b8;
+  font-size: 1.4rem;
+  padding: 0 4px;
+  margin-left: auto;
+}
+
+.toast-close-btn:hover {
+  color: #ffffff;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* --------------------------------------------------------
+   12. RESPONSIVE DESIGN FOR MOBILE SCREENS
+   -------------------------------------------------------- */
+@media (max-width: 500px) {
+  .app-container {
+    padding: 18px 14px;
+  }
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .options-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .filter-tabs {
+    justify-content: space-between;
+  }
+  .filter-btn {
+    flex: 1;
+    text-align: center;
+    padding: 6px 8px;
+  }
+}
