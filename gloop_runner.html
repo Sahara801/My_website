@@ -527,58 +527,71 @@
         border-radius: 6px;
       }
 
-      /* Canvas flexible gaming area */
+      /* Canvas gaming area - Proportional Retro TV Bezel on Phone */
       .canvas-wrapper {
-        flex: 1;
-        min-height: 0;
         width: 100%;
-        aspect-ratio: auto; /* Let flex occupy natural screen height */
+        aspect-ratio: 16 / 9;
+        max-height: 48vh;
         display: flex;
         align-items: center;
         justify-content: center;
         background: #000;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+        flex-shrink: 0;
+        position: relative;
       }
 
       canvas#gameCanvas {
         width: 100%;
         height: 100%;
-        object-fit: contain;
+        display: block;
       }
 
-      /* On-screen touch controls in canvas are hidden in portrait; dedicated bottom bar is used */
+      /* On-screen touch controls in canvas are hidden in portrait; dedicated console deck is used */
       .touch-controls {
         display: none !important;
       }
 
-      /* Mobile Dedicated Bottom Control Deck */
+      /* Mobile Handheld Console Deck (Game Boy / Switch Inspired) */
       .mobile-control-bar {
+        flex: 1;
+        width: 100%;
         display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
         align-items: center;
-        justify-content: space-between;
-        padding: 8px 12px;
-        padding-bottom: max(10px, env(safe-area-inset-bottom));
-        background: rgba(14, 15, 26, 0.98);
-        border-top: 1px solid rgba(255, 255, 255, 0.08);
-        gap: 10px;
+        padding: 14px 16px;
+        padding-bottom: max(16px, env(safe-area-inset-bottom));
+        background: linear-gradient(180deg, #131422 0%, #080911 100%);
+        gap: 12px;
         z-index: 25;
+      }
+
+      .mobile-btn-row {
+        display: flex;
+        width: 100%;
+        gap: 12px;
+        align-items: center;
       }
 
       .mobile-btn {
         flex: 1;
-        height: 60px;
+        height: 70px;
         border: none;
-        border-radius: 18px;
+        border-radius: 22px;
         color: #ffffff;
         font-family: inherit;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 8px;
+        gap: 10px;
         cursor: pointer;
         user-select: none;
         -webkit-user-select: none;
         touch-action: manipulation;
         transition: transform 0.08s ease, filter 0.08s ease;
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
       }
 
       .mobile-btn:active, .mobile-btn.pressed {
@@ -587,17 +600,17 @@
       }
 
       .mobile-btn.btn-duck {
-        background: linear-gradient(135deg, #673ab7, #536dfe);
-        box-shadow: 0 6px 18px rgba(103, 58, 183, 0.35);
+        background: linear-gradient(135deg, #7c4dff, #536dfe);
+        border: 2px solid rgba(124, 77, 255, 0.45);
       }
 
       .mobile-btn.btn-jump {
         background: linear-gradient(135deg, #ff4081, #f50057);
-        box-shadow: 0 6px 18px rgba(255, 64, 129, 0.4);
+        border: 2px solid rgba(255, 64, 129, 0.5);
       }
 
       .mobile-btn .btn-icon {
-        font-size: 1.35rem;
+        font-size: 1.45rem;
       }
 
       .mobile-btn .btn-labels {
@@ -608,25 +621,31 @@
       }
 
       .mobile-btn .btn-title {
-        font-size: 0.92rem;
+        font-size: 0.98rem;
         font-weight: 800;
         letter-spacing: 0.5px;
       }
 
       .mobile-btn .btn-sub {
-        font-size: 0.65rem;
+        font-size: 0.68rem;
         font-weight: 600;
         opacity: 0.85;
       }
 
-      .mobile-hint {
-        display: none;
-        flex-direction: column;
+      .mobile-orientation-hint {
+        display: flex;
         align-items: center;
-        font-size: 0.62rem;
-        color: var(--text-muted);
-        line-height: 1.2;
-        text-align: center;
+        gap: 6px;
+        padding: 6px 14px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        font-size: 0.74rem;
+        color: rgba(255, 255, 255, 0.75);
+      }
+
+      .mobile-orientation-hint strong {
+        color: #ffd54f;
       }
 
       /* Hide PC keyboard hints footer on phone */
@@ -657,21 +676,30 @@
       }
     }
 
-    /* Landscape Mode on Phone (Hold phone sideways) */
-    @media (max-width: 900px) and (orientation: landscape) {
+    /* Landscape Cinema Mode on Phone (Hold phone sideways) */
+    @media (max-width: 950px) and (orientation: landscape) {
       body {
         padding: 0;
         height: 100vh;
+        overflow: hidden;
       }
 
       #game-container {
         height: 100vh;
+        height: 100dvh;
         width: 100vw;
         border-radius: 0;
       }
 
       header.game-header {
-        padding: 4px 12px;
+        padding: 4px 16px;
+        background: rgba(12, 13, 22, 0.85);
+        backdrop-filter: blur(8px);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 20;
       }
 
       .season-ticker {
@@ -682,23 +710,57 @@
         display: none !important;
       }
 
+      .canvas-wrapper {
+        width: 100vw;
+        height: 100dvh;
+        height: 100vh;
+        max-height: 100vh;
+        aspect-ratio: auto;
+        border-bottom: none;
+      }
+
       /* In landscape, show floating corner thumb buttons */
       .touch-controls {
         display: flex !important;
         position: absolute;
-        bottom: 10px;
+        bottom: 16px;
         left: 0;
         width: 100%;
-        padding: 0 16px;
+        padding: 0 24px;
         pointer-events: none;
         justify-content: space-between;
-        z-index: 25;
+        z-index: 30;
       }
 
       .touch-btn {
         pointer-events: auto;
-        width: 68px;
-        height: 68px;
+        width: 78px;
+        height: 78px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(12px);
+        border: 2px solid rgba(255, 255, 255, 0.25);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), inset 0 2px 6px rgba(255, 255, 255, 0.2);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        color: #fff;
+        cursor: pointer;
+        touch-action: manipulation;
+        transition: transform 0.08s ease, background 0.08s ease;
+      }
+
+      .touch-btn:active {
+        transform: scale(0.92);
+        background: rgba(255, 64, 129, 0.45);
+        border-color: #ff4081;
+      }
+
+      .touch-btn#touch-duck:active {
+        background: rgba(103, 58, 183, 0.5);
+        border-color: #7c4dff;
       }
     }
 
@@ -825,21 +887,27 @@
 
     <!-- Mobile Dedicated Touch Control Deck (Visible on Phone) -->
     <div class="mobile-control-bar">
-      <button id="mobile-duck" class="mobile-btn btn-duck" aria-label="Duck">
-        <span class="btn-icon">🛡️</span>
-        <div class="btn-labels">
-          <span class="btn-title">DUCK</span>
-          <span class="btn-sub">HOLD TO SLIDE</span>
-        </div>
-      </button>
+      <div class="mobile-btn-row">
+        <button id="mobile-duck" class="mobile-btn btn-duck" aria-label="Duck">
+          <span class="btn-icon">🛡️</span>
+          <div class="btn-labels">
+            <span class="btn-title">DUCK</span>
+            <span class="btn-sub">HOLD TO SLIDE</span>
+          </div>
+        </button>
 
-      <button id="mobile-jump" class="mobile-btn btn-jump" aria-label="Jump / Double Jump">
-        <span class="btn-icon">🦘</span>
-        <div class="btn-labels">
-          <span class="btn-title">JUMP</span>
-          <span class="btn-sub">TAP x2 FLIP</span>
-        </div>
-      </button>
+        <button id="mobile-jump" class="mobile-btn btn-jump" aria-label="Jump / Double Jump">
+          <span class="btn-icon">🦘</span>
+          <div class="btn-labels">
+            <span class="btn-title">JUMP</span>
+            <span class="btn-sub">TAP x2 HIGHER</span>
+          </div>
+        </button>
+      </div>
+
+      <div class="mobile-orientation-hint">
+        <span>📱 🔄 Hold sideways for <strong>Fullscreen Cinema Mode</strong>!</span>
+      </div>
     </div>
 
     <!-- Bottom Footer Hints -->
@@ -3906,10 +3974,25 @@
           ctx.save();
           ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-          // Apply High-DPI & Virtual scale transform (Zero forced reflow!)
-          const scaleX = this.canvas.width / VIRTUAL_WIDTH;
-          const scaleY = this.canvas.height / VIRTUAL_HEIGHT;
-          ctx.scale(scaleX, scaleY);
+          // Atmospheric fill for any outer margins to match seasonal sky
+          const currentSeason = SEASONS[this.currentSeasonIndex];
+          ctx.fillStyle = currentSeason.skyTop || '#0d0e17';
+          ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+          // UNIFORM SCALING (Strict 1:1 Aspect Ratio - Never elongate or distort Gloop or assets!)
+          const scale = Math.min(this.canvas.width / VIRTUAL_WIDTH, this.canvas.height / VIRTUAL_HEIGHT);
+          const drawW = VIRTUAL_WIDTH * scale;
+          const drawH = VIRTUAL_HEIGHT * scale;
+          const offsetX = (this.canvas.width - drawW) / 2;
+          const offsetY = (this.canvas.height - drawH) / 2;
+
+          ctx.translate(offsetX, offsetY);
+          ctx.scale(scale, scale);
+
+          // Clip to virtual play area to keep edges clean
+          ctx.beginPath();
+          ctx.rect(0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
+          ctx.clip();
 
           // Screen shake
           if (this.shakeTime > 0 && !prefersReducedMotion) {
