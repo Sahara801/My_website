@@ -417,7 +417,7 @@
         height: 100dvh;
         height: 100vh;
         overflow: hidden;
-        background: #000;
+        background: #0d0e17;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -432,25 +432,22 @@
         border-radius: 0;
         border: none;
         box-shadow: none;
-        background: #000;
+        background: #0d0e17;
         position: relative;
         overflow: hidden;
         display: flex;
         flex-direction: column;
       }
 
-      /* Floating Translucent Top HUD */
+      /* Floating / Header HUD */
       header.game-header {
-        position: absolute;
-        top: 0;
-        left: 0;
+        position: relative;
         width: 100%;
         padding: 8px 12px;
         gap: 8px;
         flex-wrap: nowrap;
-        background: linear-gradient(180deg, rgba(10, 11, 20, 0.88) 0%, rgba(10, 11, 20, 0) 100%);
-        backdrop-filter: blur(4px);
-        border-bottom: none;
+        background: rgba(14, 15, 26, 0.96);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         z-index: 25;
       }
 
@@ -464,7 +461,7 @@
       }
 
       .brand-title {
-        font-size: 0.95rem;
+        font-size: 0.92rem;
         letter-spacing: 0.2px;
       }
 
@@ -481,16 +478,12 @@
 
       .stat-pill {
         padding: 4px 8px;
-        font-size: 0.72rem;
+        font-size: 0.75rem;
         border-radius: 12px;
         gap: 4px;
         white-space: nowrap;
         background: rgba(0, 0, 0, 0.45);
         border: 1px solid rgba(255, 255, 255, 0.15);
-      }
-
-      .stat-pill span[style*="opacity"] {
-        display: none;
       }
 
       .header-actions {
@@ -511,12 +504,240 @@
         display: none;
       }
 
-      /* Keep Season Ticker minimal on mobile */
       .season-ticker {
         display: none !important;
       }
 
-      /* Game Canvas Fills the Entire Mobile Screen */
+      footer.game-footer {
+        display: none !important;
+      }
+
+      /* Overlays on Mobile */
+      .overlay-screen {
+        padding: 20px 16px;
+        background: rgba(10, 11, 20, 0.78);
+        backdrop-filter: blur(6px);
+      }
+
+      .overlay-title {
+        font-size: 1.85rem;
+        margin-bottom: 8px;
+      }
+
+      .overlay-desc {
+        font-size: 0.88rem;
+        line-height: 1.5;
+        margin-bottom: 18px;
+        max-width: 90%;
+      }
+
+      .overlay-btn {
+        padding: 12px 28px;
+        font-size: 1.02rem;
+        border-radius: 28px;
+        box-shadow: 0 8px 25px rgba(255, 64, 129, 0.5);
+        animation: pulseBtn 1.6s ease-in-out infinite;
+      }
+
+      @keyframes pulseBtn {
+        0%, 100% { transform: scale(1); box-shadow: 0 8px 25px rgba(255, 64, 129, 0.5); }
+        50% { transform: scale(1.05); box-shadow: 0 12px 32px rgba(255, 64, 129, 0.8); }
+      }
+    }
+
+    /* ==========================================================================
+       MOBILE PORTRAIT MODE (< 900px, Portrait orientation)
+       Retro Handheld Arcade Console: 16:9 Screen on Top, Ergonomic Deck Below
+       ZERO OVERLAP: Gloop is 100% visible, buttons are on the deck!
+       ========================================================================== */
+    @media (max-width: 900px) and (orientation: portrait) {
+      #game-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      /* 16:9 Clean Arcade Viewport */
+      .canvas-wrapper {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        max-height: 48vh;
+        flex-shrink: 0;
+        background: #000;
+        overflow: hidden;
+        border-bottom: 2px solid rgba(255, 64, 129, 0.25);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+      }
+
+      canvas#gameCanvas {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      /* In portrait, hide the floating landscape buttons */
+      .touch-controls {
+        display: none !important;
+      }
+
+      /* Handheld Arcade Controller Deck */
+      .portrait-deck {
+        display: flex !important;
+        flex-direction: column;
+        justify-content: space-between;
+        flex-grow: 1;
+        padding: 12px 18px 22px 18px;
+        background: radial-gradient(circle at 50% 25%, #1c1f36 0%, #0d0e18 100%);
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        user-select: none;
+        -webkit-user-select: none;
+        z-index: 15;
+      }
+
+      .deck-rotate-banner {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: rgba(255, 64, 129, 0.12);
+        border: 1px dashed rgba(255, 64, 129, 0.35);
+        color: #ff80ab;
+        padding: 6px 12px;
+        border-radius: 18px;
+        font-size: 0.74rem;
+        font-weight: 700;
+        cursor: pointer;
+        text-align: center;
+        transition: background 0.2s;
+      }
+
+      .deck-rotate-banner:active {
+        background: rgba(255, 64, 129, 0.25);
+      }
+
+      .deck-controls-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        margin-top: auto;
+        padding-bottom: 6px;
+      }
+
+      .deck-btn {
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        cursor: pointer;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        transition: transform 0.08s ease, filter 0.08s ease;
+      }
+
+      .deck-btn:active, .deck-btn.pressed {
+        transform: scale(0.91);
+        filter: brightness(1.3);
+      }
+
+      .deck-btn-duck {
+        width: 82px;
+        height: 82px;
+        background: linear-gradient(135deg, rgba(124, 77, 255, 0.95), rgba(83, 109, 254, 0.95));
+        border: 3px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 8px 22px rgba(103, 58, 183, 0.55), inset 0 2px 6px rgba(255, 255, 255, 0.35);
+      }
+
+      .deck-btn-jump {
+        width: 98px;
+        height: 98px;
+        background: linear-gradient(135deg, rgba(255, 64, 129, 0.98), rgba(245, 0, 87, 0.98));
+        border: 3px solid rgba(255, 255, 255, 0.45);
+        box-shadow: 0 10px 28px rgba(255, 64, 129, 0.65), inset 0 2px 6px rgba(255, 255, 255, 0.4);
+      }
+
+      .deck-btn-icon {
+        font-size: 1.65rem;
+        line-height: 1;
+      }
+
+      .deck-btn-text {
+        font-size: 0.68rem;
+        font-weight: 900;
+        letter-spacing: 0.5px;
+        margin-top: 2px;
+      }
+
+      .deck-center-console {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .deck-console-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.35);
+        padding: 4px 12px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .deck-console-label {
+        font-size: 0.62rem;
+        font-weight: 700;
+        color: var(--text-muted);
+        letter-spacing: 0.5px;
+      }
+
+      .deck-console-val {
+        font-size: 0.92rem;
+        font-weight: 900;
+        color: var(--accent-gold);
+      }
+    }
+
+    /* ==========================================================================
+       MOBILE LANDSCAPE MODE (Full-Screen Horizontal Arcade Runner)
+       Full bleed edge-to-edge cinematic canvas with right-hand thumb controls
+       Gloop is 100% visible on the left side with huge open view!
+       ========================================================================== */
+    @media (max-width: 900px) and (orientation: landscape), (max-height: 500px) and (orientation: landscape) {
+      .portrait-deck {
+        display: none !important;
+      }
+
+      #game-container {
+        width: 100vw;
+        height: 100dvh;
+        height: 100vh;
+        position: relative;
+        overflow: hidden;
+        background: #000;
+      }
+
+      header.game-header {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 6px 14px;
+        background: linear-gradient(180deg, rgba(10, 11, 20, 0.85) 0%, rgba(10, 11, 20, 0) 100%);
+        border-bottom: none;
+        z-index: 25;
+        pointer-events: none;
+      }
+
+      header.game-header * {
+        pointer-events: auto;
+      }
+
       .canvas-wrapper {
         position: absolute;
         top: 0;
@@ -525,9 +746,6 @@
         height: 100dvh;
         height: 100vh;
         background: #000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
         overflow: hidden;
       }
 
@@ -541,14 +759,14 @@
       .touch-controls {
         display: flex !important;
         position: absolute;
-        bottom: 22px;
-        right: 22px;
+        bottom: 16px;
+        right: 18px;
         left: auto !important;
         width: auto !important;
         padding: 0 !important;
         pointer-events: none;
         align-items: flex-end;
-        gap: 16px;
+        gap: 14px;
         z-index: 30;
       }
 
@@ -573,16 +791,16 @@
       }
 
       .touch-btn#touch-duck {
-        width: 68px;
-        height: 68px;
+        width: 66px;
+        height: 66px;
         background: linear-gradient(135deg, rgba(124, 77, 255, 0.9), rgba(83, 109, 254, 0.9));
         border: 2px solid rgba(124, 77, 255, 0.6);
         box-shadow: 0 8px 24px rgba(103, 58, 183, 0.5), inset 0 2px 6px rgba(255, 255, 255, 0.3);
       }
 
       .touch-btn#touch-jump {
-        width: 88px;
-        height: 88px;
+        width: 86px;
+        height: 86px;
         background: linear-gradient(135deg, rgba(255, 64, 129, 0.95), rgba(245, 0, 87, 0.95));
         border: 2px solid rgba(255, 64, 129, 0.65);
         box-shadow: 0 10px 28px rgba(255, 64, 129, 0.6), inset 0 2px 6px rgba(255, 255, 255, 0.35);
@@ -599,38 +817,8 @@
         letter-spacing: 0.5px;
         margin-top: 2px;
       }
-
-      /* Hide PC keyboard hints footer on phone */
-      footer.game-footer {
-        display: none !important;
-      }
-
-      /* Scaled cute overlays for mobile */
-      .overlay-screen {
-        padding: 22px 18px;
-        background: rgba(10, 11, 20, 0.72);
-      }
-
-      .overlay-title {
-        font-size: 1.9rem;
-        margin-bottom: 8px;
-      }
-
-      .overlay-desc {
-        font-size: 0.9rem;
-        line-height: 1.5;
-        margin-bottom: 20px;
-        max-width: 90%;
-      }
-
-      .overlay-btn {
-        padding: 13px 32px;
-        font-size: 1.05rem;
-        border-radius: 28px;
-        box-shadow: 0 8px 25px rgba(255, 64, 129, 0.5);
-      }
     }
-
+    
     /* Respect reduced motion preference */
     @media (prefers-reduced-motion: reduce) {
       .brand-icon {
@@ -751,6 +939,35 @@
         <button id="btn-restart" class="overlay-btn">PLAY AGAIN (SPACE)</button>
       </div>
     </div>
+    <!-- Dedicated Mobile Portrait Deck (Active on phones in vertical orientation) -->
+    <div class="portrait-deck" id="portrait-deck" style="display: none;">
+      <div class="deck-rotate-banner" id="btn-rotate-hint">
+        <span>🔄 Rotate phone sideways for full-screen arcade!</span>
+      </div>
+      <div class="deck-controls-row">
+        <button id="deck-duck" class="deck-btn deck-btn-duck" aria-label="Slide / Duck">
+          <span class="deck-btn-icon">🛡️</span>
+          <span class="deck-btn-text">DUCK</span>
+        </button>
+
+        <div class="deck-center-console">
+          <div class="deck-console-item">
+            <span class="deck-console-label">DISTANCE</span>
+            <span class="deck-console-val" id="deck-score">0 m</span>
+          </div>
+          <div class="deck-console-item">
+            <span class="deck-console-label">DONUTS</span>
+            <span class="deck-console-val" id="deck-donuts">0</span>
+          </div>
+        </div>
+
+        <button id="deck-jump" class="deck-btn deck-btn-jump" aria-label="Jump / Double Jump">
+          <span class="deck-btn-icon">🦘</span>
+          <span class="deck-btn-text">JUMP x2</span>
+        </button>
+      </div>
+    </div>
+
 
     <!-- Bottom Footer Hints -->
     <footer class="game-footer">
@@ -3072,10 +3289,13 @@
           }
         }
 
-        draw(ctx, seasonIndex, nextSeasonIndex, transitionFactor, isSummerMonsoon) {
+        draw(ctx, seasonIndex, nextSeasonIndex, transitionFactor, isSummerMonsoon, viewLeft = 0, viewRight = VIRTUAL_WIDTH, viewTop = 0, viewBottom = VIRTUAL_HEIGHT) {
           const cur = SEASONS_DATA[seasonIndex];
           const next = SEASONS_DATA[nextSeasonIndex];
           const f = transitionFactor;
+
+          const spanW = viewRight - viewLeft;
+          const spanH = Math.max(VIRTUAL_HEIGHT, viewBottom) - viewTop;
 
           // 1. Dynamic Interpolated Sky Gradient
           let curSkyTop = cur.skyTop;
@@ -3085,11 +3305,11 @@
             curSkyBottom = cur.skyStormBottom;
           }
 
-          const skyGrad = ctx.createLinearGradient(0, 0, 0, GROUND_Y);
+          const skyGrad = ctx.createLinearGradient(0, viewTop, 0, GROUND_Y);
           skyGrad.addColorStop(0, lerpColor(curSkyTop, next.skyTop, f));
           skyGrad.addColorStop(1, lerpColor(curSkyBottom, next.skyBottom, f));
           ctx.fillStyle = skyGrad;
-          ctx.fillRect(0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
+          ctx.fillRect(viewLeft, viewTop, spanW, spanH);
 
           // 2. Celestial Body (Sun / Frost Sun / Moon)
           if (!isSummerMonsoon || seasonIndex !== 1) {
@@ -3099,37 +3319,39 @@
             ctx.shadowColor = sunColor;
             ctx.shadowBlur = 24;
             ctx.beginPath();
-            ctx.arc(VIRTUAL_WIDTH * 0.78, 90, cur.sunSize, 0, Math.PI * 2);
+            const sunX = Math.min(viewRight - 100, Math.max(viewLeft + 120, VIRTUAL_WIDTH * 0.78));
+            ctx.arc(sunX, 90, cur.sunSize, 0, Math.PI * 2);
             ctx.fill();
             ctx.restore();
           }
 
           // 3. Parallax Hills Layer 1: Distant Mountains / High Hills
           const farColor = lerpColor(cur.farHills, next.farHills, f);
-          this._drawHills(ctx, this.farScroll, farColor, 230, 75, 420);
+          this._drawHills(ctx, this.farScroll, farColor, 230, 75, 420, viewLeft, viewRight);
 
           // 4. Parallax Hills Layer 2: Midground Rolling Hills & Seasonal Trees
           const midColor = lerpColor(cur.midHills, next.midHills, f);
-          this._drawHills(ctx, this.midScroll, midColor, 170, 95, 320);
-          this._drawTrees(ctx, this.midScroll, seasonIndex, 330);
+          this._drawHills(ctx, this.midScroll, midColor, 170, 95, 320, viewLeft, viewRight);
+          this._drawTrees(ctx, this.midScroll, seasonIndex, 330, viewLeft, viewRight);
 
           // 5. Parallax Hills Layer 3: Near Hills
           const nearColor = lerpColor(cur.nearHills, next.nearHills, f);
-          this._drawHills(ctx, this.nearScroll, nearColor, 110, 115, 240);
+          this._drawHills(ctx, this.nearScroll, nearColor, 110, 115, 240, viewLeft, viewRight);
 
           // 6. Ground Base
           const groundTopColor = lerpColor(cur.groundTop, next.groundTop, f);
           const groundSubColor = lerpColor(cur.groundSub, next.groundSub, f);
 
           ctx.fillStyle = groundTopColor;
-          ctx.fillRect(0, GROUND_Y, VIRTUAL_WIDTH, 14);
+          ctx.fillRect(viewLeft, GROUND_Y, spanW, 14);
 
           ctx.fillStyle = groundSubColor;
-          ctx.fillRect(0, GROUND_Y + 14, VIRTUAL_WIDTH, VIRTUAL_HEIGHT - GROUND_Y - 14);
+          ctx.fillRect(viewLeft, GROUND_Y + 14, spanW, Math.max(VIRTUAL_HEIGHT, viewBottom) - GROUND_Y - 14);
 
           // Ground details / moving pebble marks
           ctx.fillStyle = 'rgba(0, 0, 0, 0.12)';
-          for (let gx = -this.groundScroll; gx < VIRTUAL_WIDTH + 60; gx += 40) {
+          const pebbleStart = viewLeft - (this.groundScroll % 40);
+          for (let gx = pebbleStart; gx < viewRight + 60; gx += 40) {
             ctx.beginPath();
             ctx.ellipse(gx, GROUND_Y + 7, 6, 2.5, 0, 0, Math.PI * 2);
             ctx.fill();
@@ -3139,33 +3361,35 @@
           if (this.lightningFlash > 0 && !prefersReducedMotion) {
             ctx.save();
             ctx.fillStyle = `rgba(255, 255, 255, ${this.lightningFlash * 0.7})`;
-            ctx.fillRect(0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
+            ctx.fillRect(viewLeft, viewTop, spanW, spanH);
             ctx.restore();
           }
         }
 
-        _drawHills(ctx, scrollOffset, color, baseHeight, amplitude, wavelength) {
+        _drawHills(ctx, scrollOffset, color, baseHeight, amplitude, wavelength, left = 0, right = VIRTUAL_WIDTH) {
           ctx.save();
           ctx.fillStyle = color;
           ctx.beginPath();
-          ctx.moveTo(0, GROUND_Y);
+          ctx.moveTo(left, GROUND_Y);
 
-          for (let x = 0; x <= VIRTUAL_WIDTH; x += 15) {
+          for (let x = left; x <= right + 20; x += 15) {
             const worldX = x + scrollOffset;
             const y = GROUND_Y - baseHeight + Math.sin(worldX / wavelength * Math.PI * 2) * amplitude;
             ctx.lineTo(x, y);
           }
 
-          ctx.lineTo(VIRTUAL_WIDTH, GROUND_Y);
+          ctx.lineTo(right, GROUND_Y);
           ctx.closePath();
           ctx.fill();
           ctx.restore();
         }
 
-        _drawTrees(ctx, scrollOffset, seasonIndex, baseY) {
+        _drawTrees(ctx, scrollOffset, seasonIndex, baseY, left = 0, right = VIRTUAL_WIDTH) {
           ctx.save();
           const treeSpacing = 280;
-          for (let tx = - (scrollOffset % treeSpacing); tx < VIRTUAL_WIDTH + 80; tx += treeSpacing) {
+          const startX = left - ((scrollOffset - left) % treeSpacing);
+          for (let tx = startX; tx < right + 80; tx += treeSpacing) {
+            ctx.save();
             ctx.translate(tx, baseY);
 
             // Trunk
@@ -3204,7 +3428,7 @@
               ctx.stroke();
             }
 
-            ctx.translate(-tx, -baseY);
+            ctx.restore();
           }
           ctx.restore();
         }
@@ -3307,7 +3531,13 @@
           this.initResize();
           this.initEventListeners();
           this.updateHUDSeason();
+          this.deckScore = document.getElementById('deck-score');
+          this.deckDonuts = document.getElementById('deck-donuts');
+          this.deckDuck = document.getElementById('deck-duck');
+          this.deckJump = document.getElementById('deck-jump');
+
           this.render(); // Immediate draw on load
+          this.startIdleLoop(); // Continuous lively preview on initial load
         }
 
         getRealCurrentSeason() {
@@ -3509,6 +3739,29 @@
             this.mobileJump.addEventListener('pointerup', cutJump);
             this.mobileJump.addEventListener('pointercancel', cutJump);
           }
+          if (this.deckDuck) {
+            this.deckDuck.addEventListener('pointerdown', startDuck);
+            this.deckDuck.addEventListener('pointerup', endDuck);
+            this.deckDuck.addEventListener('pointercancel', endDuck);
+          }
+          if (this.deckJump) {
+            this.deckJump.addEventListener('pointerdown', handleJumpTrigger);
+            this.deckJump.addEventListener('pointerup', cutJump);
+            this.deckJump.addEventListener('pointercancel', cutJump);
+          }
+
+          const btnRotateHint = document.getElementById('btn-rotate-hint');
+          if (btnRotateHint) {
+            btnRotateHint.addEventListener('click', () => {
+              if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen().catch(() => {});
+              }
+              if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch(() => {});
+              }
+            });
+          }
+
           if (this.mobileDuck) {
             this.mobileDuck.addEventListener('pointerdown', startDuck);
             this.mobileDuck.addEventListener('pointerup', endDuck);
@@ -3738,6 +3991,7 @@
           const scoreText = `${Math.floor(this.distance)} m`;
           if (this._lastScoreText !== scoreText) {
             this.hudScore.textContent = scoreText;
+            if (this.deckScore) this.deckScore.textContent = scoreText;
             this._lastScoreText = scoreText;
           }
 
@@ -3752,6 +4006,7 @@
           const donutText = `${this.donuts.totalCollected}`;
           if (this._lastDonutText !== donutText) {
             this.hudDonuts.textContent = donutText;
+            if (this.deckDonuts) this.deckDonuts.textContent = donutText;
             this._lastDonutText = donutText;
           }
 
@@ -3837,12 +4092,7 @@
           ctx.save();
           ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-          // Atmospheric fill for any outer margins to match seasonal sky
-          const currentSeason = SEASONS[this.currentSeasonIndex];
-          ctx.fillStyle = currentSeason.skyTop || '#0d0e17';
-          ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
-          // UNIFORM SCALING (Strict 1:1 Aspect Ratio - Never elongate or distort Gloop or assets!)
+          // Uniform scaling (Strict 1:1 Aspect Ratio - Never elongate or distort Gloop or assets!)
           const scale = Math.min(this.canvas.width / VIRTUAL_WIDTH, this.canvas.height / VIRTUAL_HEIGHT);
           const drawW = VIRTUAL_WIDTH * scale;
           const drawH = VIRTUAL_HEIGHT * scale;
@@ -3852,9 +4102,18 @@
           ctx.translate(offsetX, offsetY);
           ctx.scale(scale, scale);
 
-          // Clip to virtual play area to keep edges clean
+          // Full virtual view bounds covering the full canvas screen without black bars
+          const viewLeft = -offsetX / scale;
+          const viewRight = VIRTUAL_WIDTH + offsetX / scale;
+          const viewTop = -offsetY / scale;
+          const viewBottom = VIRTUAL_HEIGHT + offsetY / scale;
+
+          this.viewLeft = viewLeft;
+          this.viewRight = viewRight;
+
+          // Clip to full physical canvas view
           ctx.beginPath();
-          ctx.rect(0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
+          ctx.rect(viewLeft, viewTop, viewRight - viewLeft, viewBottom - viewTop);
           ctx.clip();
 
           // Screen shake
@@ -3865,7 +4124,7 @@
             ctx.translate(ox, oy);
           }
 
-          // 1. Draw Background & Seasonal Hills
+          // 1. Draw Background & Seasonal Hills (edge-to-edge seamless!)
           const blendStart = SEASON_DURATION_SEC - SEASON_TRANSITION_SEC;
           const transitionFactor = this.seasonTimer >= blendStart
             ? (this.seasonTimer - blendStart) / SEASON_TRANSITION_SEC
@@ -3873,27 +4132,50 @@
           const nextSeasonIndex = (this.currentSeasonIndex + 1) % 4;
           const isSummerMonsoon = (this.currentSeasonIndex === 1 && this.seasonTimer > 18.0);
 
-          this.bg.draw(ctx, this.currentSeasonIndex, nextSeasonIndex, transitionFactor, isSummerMonsoon);
+          this.bg.draw(ctx, this.currentSeasonIndex, nextSeasonIndex, transitionFactor, isSummerMonsoon, viewLeft, viewRight, viewTop, viewBottom);
 
-          // 2. Draw Weather Particles (behind characters)
+          // 2. Weather particles
           this.particles.drawWeather(ctx);
 
-          // 3. Draw Speed Lines if running fast
+          // 3. Speed Lines if fast
           this.particles.drawSpeedLines(ctx, this.currentSpeed / INITIAL_SPEED);
 
-          // 4. Draw Donuts
+          // 4. Donuts
           this.donuts.draw(ctx);
 
-          // 5. Draw Obstacles
+          // 5. Obstacles
           this.obstacles.draw(ctx);
 
-          // 6. Draw Gloop (with super aura if active)
+          // 6. Gloop
           this.gloop.draw(ctx, this.isSuperAura);
 
-          // 7. Draw Sparkles & Comic Floating Text & Confetti (foreground)
+          // 7. Sparkles & comic effects
           this.particles.drawEffects(ctx);
 
           ctx.restore();
+        }
+
+        startIdleLoop() {
+          const idleTick = (timestamp) => {
+            if (this.isRunning || this.isGameOver) return;
+            if (!this._lastIdleTime) this._lastIdleTime = timestamp;
+            const dt = Math.min(0.033, (timestamp - this._lastIdleTime) / 1000);
+            this._lastIdleTime = timestamp;
+
+            // Gentle idle animation: hills scroll softly, seasonal leaves/petals fall, Gloop breathes
+            this.bg.update(dt, 30, false);
+            this.particles.update(dt, this.currentSeasonIndex, false);
+            this.gloop.runCycle = (this.gloop.runCycle || 0) + dt * 3.5;
+            this.gloop.squashX = 1 + Math.sin(this.gloop.runCycle) * 0.05;
+            this.gloop.squashY = 1 - Math.sin(this.gloop.runCycle) * 0.05;
+
+            this.render();
+
+            if (!this.isRunning && !this.isGameOver) {
+              requestAnimationFrame(idleTick);
+            }
+          };
+          requestAnimationFrame(idleTick);
         }
       }
 
