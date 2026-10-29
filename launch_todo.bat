@@ -1,7 +1,7 @@
 @echo off
-:: This script opens your To-Do List App in your default web browser
+:: This script opens Serene Tasks in your default web browser
 echo ==============================================
-echo   Opening your To-Do List App...
+echo   Opening Serene Tasks To-Do App...
 echo ==============================================
-start "" "%~dp0todo.html"
+start "" "%~dp0index.html"
 exit

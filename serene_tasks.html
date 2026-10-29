@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="A warm, calming, rounded To-Do List web application inspired by modern journaling apps." />
+  <meta name="theme-color" content="#E0DBD9" />
+  <title>Serene Tasks — Mindful Journal &amp; To-Do</title>
+  
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- App Shell -->
+  <div id="app" class="app-wrapper">
+
+    <!-- Top Navigation Bar (Desktop & Tablet) -->
+    <header class="app-topbar" role="banner">
+      <div class="topbar-inner">
+        <!-- Logo & Branding -->
+        <div class="brand-group">
+          <div class="brand-icon" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <h1 class="brand-title">Serene Tasks</h1>
+            <p class="brand-subtitle">Mindful Journaling &amp; To-Do</p>
+          </div>
+        </div>
+
+        <!-- Desktop Navigation Tabs -->
+        <nav class="desktop-nav" aria-label="Main Navigation">
+          <button class="nav-tab active" data-view="home" aria-selected="true" role="tab">
+            <span class="tab-icon">🏠</span>
+            <span class="tab-label">Home</span>
+          </button>
+          <button class="nav-tab" data-view="calendar" aria-selected="false" role="tab">
+            <span class="tab-icon">📅</span>
+            <span class="tab-label">Calendar</span>
+          </button>
+          <button class="nav-tab" data-view="stats" aria-selected="false" role="tab">
+            <span class="tab-icon">📊</span>
+            <span class="tab-label">Stats</span>
+          </button>
+          <button class="nav-tab" data-view="profile" aria-selected="false" role="tab">
+            <span class="tab-icon">👤</span>
+            <span class="tab-label">Profile</span>
+          </button>
+        </nav>
+
+        <!-- Right Side: Clock & Profile Trigger -->
+        <div class="topbar-actions">
+          <div class="live-clock-pill" id="live-clock-pill" title="Current Local Time">
+            <span class="clock-icon" aria-hidden="true">🕒</span>
+            <span id="live-clock-text">--:--</span>
+          </div>
+          <button class="btn-primary-add" id="desktop-add-btn" aria-label="Create New Task">
+            <span class="plus-icon" aria-hidden="true">+</span>
+            <span class="btn-text">New Task</span>
+          </button>
+          <button class="user-avatar-btn" id="topbar-avatar-btn" aria-label="Open User Profile" title="Open Profile">
+            <span class="avatar-emoji" id="topbar-avatar-emoji">🌻</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Overdue Alert Banner -->
+    <div id="overdue-banner" class="overdue-banner hidden" role="alert">
+      <div class="banner-content">
+        <span class="banner-icon" aria-hidden="true">⚠️</span>
+        <span id="overdue-banner-text">You have 0 overdue tasks.</span>
+      </div>
+      <div class="banner-actions">
+        <button id="banner-review-btn" class="banner-btn">Review Now</button>
+        <button id="banner-dismiss-btn" class="banner-close" aria-label="Dismiss banner">&times;</button>
+      </div>
+    </div>
+
+    <!-- MAIN APP CONTENT AREA -->
+    <main class="app-main" id="app-main" role="main">
+
+      <!-- ================= 1. HOME VIEW ================= -->
+      <section id="view-home" class="view-panel active" aria-label="Home Dashboard">
+        <!-- Desktop Two-Panel Layout Container -->
+        <div class="home-layout">
+          
+          <!-- LEFT / PRIMARY COLUMN: Tasks, Week Strip, Quick Add -->
+          <div class="home-main-col">
+            
+            <!-- Mobile Header with Greeting & Live Clock -->
+            <div class="mobile-greeting-bar">
+              <div class="user-meta">
+                <button class="user-avatar-btn" id="mobile-avatar-btn" aria-label="Edit Profile">
+                  <span class="avatar-emoji" id="mobile-avatar-emoji">🌻</span>
+                </button>
+                <div class="greeting-texts">
+                  <span class="salutation-text" id="time-salutation">Good morning</span>
+                  <h2 class="user-name-title" id="greeting-username">Friend</h2>
+                </div>
+              </div>
+              <div class="mobile-date-badge">
+                <span id="mobile-date-text">Oct 27</span>
+                <span class="mobile-time-text" id="mobile-time-text">07:15 PM</span>
+              </div>
+            </div>
+
+            <!-- Week Strip: Current Week Mon-Sun -->
+            <section class="week-strip-card" aria-label="Week Calendar Navigation">
+              <div class="week-strip-header">
+                <div class="week-strip-title-group">
+                  <h3 class="week-title" id="week-strip-label">October 2026</h3>
+                  <button class="btn-text-small" id="btn-jump-today">Today</button>
+                </div>
+                <div class="week-strip-controls">
+                  <button class="icon-btn-circle" id="btn-prev-week" aria-label="Previous Week" title="Previous Week">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                  </button>
+                  <button class="icon-btn-circle" id="btn-next-week" aria-label="Next Week" title="Next Week">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="week-days-row" id="week-days-container" role="tablist" aria-label="Week Days">
+                <!-- Populated dynamically via JS -->
+              </div>
+            </section>
+
+            <!-- Hero Cards Carousel: Morning / Afternoon / Evening & Mindful Quote -->
+            <section class="hero-carousel-section" aria-label="Daily Overview Carousel">
+              <div class="hero-carousel-track" id="hero-carousel-track">
+                <!-- Card 1: Time of Day Hero -->
+                <article class="hero-card hero-dynamic" id="hero-dynamic-card">
+                  <div class="hero-body">
+                    <span class="hero-badge" id="hero-time-badge">Daylight Routine</span>
+                    <h3 class="hero-heading" id="hero-heading">Let's start your day</h3>
+                    <p class="hero-subtext" id="hero-subtext">You have 3 tasks pending today.</p>
+                    <div class="hero-cta-row">
+                      <button class="hero-btn-pill" id="hero-view-tasks-btn">View Today's Tasks &darr;</button>
+                    </div>
+                  </div>
+                  <div class="hero-visual" id="hero-illustration" aria-hidden="true">
+                    <!-- Dynamic Smiling Sun / Afternoon / Night Illustration -->
+                    <div class="smiling-sun">
+                      <svg width="96" height="96" viewBox="0 0 100 100" fill="none">
+                        <circle cx="50" cy="50" r="32" fill="#FDB92B" />
+                        <!-- Rays -->
+                        <path d="M50 6v8M50 86v8M6 50h8M86 50h8M18.9 18.9l5.6 5.6M75.5 75.5l5.6 5.6M18.9 81.1l5.6-5.6M75.5 24.5l5.6-5.6" stroke="#FDB92B" stroke-width="6" stroke-linecap="round" />
+                        <!-- Happy Eyes -->
+                        <circle cx="41" cy="45" r="3.5" fill="#1F1F1F" />
+                        <circle cx="59" cy="45" r="3.5" fill="#1F1F1F" />
+                        <!-- Rosy Cheeks -->
+                        <circle cx="35" cy="53" r="4.5" fill="#F4D0CA" />
+                        <circle cx="65" cy="53" r="4.5" fill="#F4D0CA" />
+                        <!-- Gentle Smile -->
+                        <path d="M43 53 Q50 62 57 53" stroke="#1F1F1F" stroke-width="3.5" stroke-linecap="round" fill="none" />
+                      </svg>
+                    </div>
+                  </div>
+                </article>
+
+                <!-- Card 2: Mindful Journaling & Streak Card -->
+                <article class="hero-card hero-mindful">
+                  <div class="hero-body">
+                    <span class="hero-badge badge-lavender">Mindful Thought</span>
+                    <h3 class="hero-heading">One breath, one step.</h3>
+                    <p class="hero-subtext">"Focus on gentle progress today, not exhausting perfection."</p>
+                    <div class="hero-meta-pill">
+                      <span>🌱 Streak: <strong id="hero-streak-count">1 day</strong></span>
+                    </div>
+                  </div>
+                  <div class="hero-visual" aria-hidden="true">
+                    <div class="zen-illustration">🌿</div>
+                  </div>
+                </article>
+              </div>
+            </section>
+
+            <!-- Quick Add Categories Section -->
+            <section class="quick-add-section" aria-label="Quick Add by Category">
+              <div class="section-header-row">
+                <h3 class="section-title">Quick Add</h3>
+                <span class="section-hint">Tap a category to create</span>
+              </div>
+              <div class="quick-categories-scroller">
+                <button class="quick-category-card cat-personal" data-category="Personal">
+                  <span class="cat-icon">🌸</span>
+                  <span class="cat-name">Personal</span>
+                </button>
+                <button class="quick-category-card cat-work" data-category="Work">
+                  <span class="cat-icon">💼</span>
+                  <span class="cat-name">Work</span>
+                </button>
+                <button class="quick-category-card cat-family" data-category="Family">
+                  <span class="cat-icon">🏡</span>
+                  <span class="cat-name">Family</span>
+                </button>
+                <button class="quick-category-card cat-health" data-category="Health">
+                  <span class="cat-icon">🥑</span>
+                  <span class="cat-name">Health</span>
+                </button>
+                <button class="quick-category-card cat-study" data-category="Study">
+                  <span class="cat-icon">📚</span>
+                  <span class="cat-name">Study</span>
+                </button>
+              </div>
+            </section>
+
+            <!-- My Tasks Section -->
+            <section class="my-tasks-section" id="my-tasks-container" aria-label="My Tasks List">
+              <div class="tasks-section-header">
+                <div class="title-with-count">
+                  <h3 class="section-title">My Tasks</h3>
+                  <span class="task-count-pill" id="total-visible-count">0</span>
+                </div>
+                <div class="header-right-actions">
+                  <button class="btn-text-link" id="btn-see-all">See all</button>
+                  <button class="btn-text-danger" id="btn-clear-completed" title="Clear all completed tasks">Clear completed</button>
+                </div>
+              </div>
+
+              <!-- Filter Chips Bar -->
+              <div class="filter-chips-scroller" role="tablist" aria-label="Task Status Filters">
+                <button class="filter-chip active" data-filter="all" role="tab" aria-selected="true">All</button>
+                <button class="filter-chip" data-filter="today" role="tab" aria-selected="false">Today</button>
+                <button class="filter-chip" data-filter="upcoming" role="tab" aria-selected="false">Upcoming</button>
+                <button class="filter-chip" data-filter="completed" role="tab" aria-selected="false">Completed</button>
+                <button class="filter-chip" data-filter="overdue" role="tab" aria-selected="false">Overdue</button>
+              </div>
+
+              <!-- Search and Sort Toolbar -->
+              <div class="tasks-toolbar">
+                <div class="search-input-wrapper">
+                  <span class="search-icon" aria-hidden="true">🔍</span>
+                  <input type="search" id="task-search-input" placeholder="Search tasks, descriptions..." aria-label="Search tasks" />
+                  <button id="search-clear-btn" class="search-clear-btn hidden" aria-label="Clear search">&times;</button>
+                </div>
+
+                <div class="sort-wrapper">
+                  <label for="task-sort-select" class="sr-only">Sort Tasks By</label>
+                  <select id="task-sort-select" class="sort-select" aria-label="Sort tasks">
+                    <option value="date-asc">Due Date (Earliest)</option>
+                    <option value="date-desc">Due Date (Latest)</option>
+                    <option value="priority-desc">Priority (High to Low)</option>
+                    <option value="category">Category</option>
+                    <option value="created-desc">Recently Added</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Task List Container -->
+              <div class="task-list-wrapper">
+                <ul class="task-list" id="task-list" aria-live="polite">
+                  <!-- Rendered dynamically by script.js -->
+                </ul>
+
+                <!-- Empty State -->
+                <div class="empty-state-card hidden" id="empty-state">
+                  <div class="empty-icon-art">🕊️</div>
+                  <h4 class="empty-title">All clear and peaceful!</h4>
+                  <p class="empty-message">No tasks found for this view. Relax or tap + to add a mindful to-do.</p>
+                  <button class="btn-primary-pill" id="empty-add-btn">+ Add a Task</button>
+                </div>
+              </div>
+
+            </section>
+
+          </div>
+
+          <!-- RIGHT / DESKTOP COMPANION SIDEBAR: Stats Overview & Quick Motivation -->
+          <aside class="home-companion-col" aria-label="Stats &amp; Daily Inspiration">
+            <div class="companion-sticky-inner">
+
+              <!-- Mini Stats Card -->
+              <div class="companion-card stats-overview-card">
+                <div class="card-head">
+                  <h4 class="card-label">Weekly Mindful Rhythm</h4>
+                  <span class="stat-badge" id="companion-completion-rate">0% done</span>
+                </div>
+                
+                <div class="big-stat-wrap">
+                  <div class="big-stat-number" id="companion-completed-count">0</div>
+                  <p class="big-stat-caption">Tasks completed this week</p>
+                </div>
+
+                <!-- Vertical Pill Bars (Emotions / Harmony style) -->
+                <div class="harmony-bars-container" aria-label="Weekly breakdown">
+                  <div class="harmony-bar-col">
+                    <div class="pill-bar-track">
+                      <div class="pill-bar-fill fill-success" id="bar-fill-completed" style="height: 0%;"></div>
+                    </div>
+                    <span class="bar-value" id="bar-val-completed">0%</span>
+                    <span class="bar-name">Done</span>
+                  </div>
+
+                  <div class="harmony-bar-col">
+                    <div class="pill-bar-track">
+                      <div class="pill-bar-fill fill-primary" id="bar-fill-pending" style="height: 0%;"></div>
+                    </div>
+                    <span class="bar-value" id="bar-val-pending">0%</span>
+                    <span class="bar-name">Pending</span>
+                  </div>
+
+                  <div class="harmony-bar-col">
+                    <div class="pill-bar-track">
+                      <div class="pill-bar-fill fill-danger" id="bar-fill-overdue" style="height: 0%;"></div>
+                    </div>
+                    <span class="bar-value" id="bar-val-overdue">0%</span>
+                    <span class="bar-name">Overdue</span>
+                  </div>
+
+                  <div class="harmony-bar-col">
+                    <div class="pill-bar-track">
+                      <div class="pill-bar-fill fill-neutral" id="bar-fill-today" style="height: 0%;"></div>
+                    </div>
+                    <span class="bar-value" id="bar-val-today">0%</span>
+                    <span class="bar-name">Today</span>
+                  </div>
+                </div>
+
+                <div class="companion-card-footer">
+                  <div class="streak-pill">
+                    <span class="fire-icon">🔥</span>
+                    <span id="companion-streak-text">0 days continuous streak</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Journal Inspiration & Calendar Shortcut Card -->
+              <div class="companion-card journal-quote-card">
+                <div class="quote-icon">✨</div>
+                <blockquote class="journal-quote-text" id="companion-quote">
+                  "Small daily disciplines repeated consistently lead to great achievements."
+                </blockquote>
+                <div class="companion-action-row">
+                  <button class="btn-secondary-pill" id="companion-goto-calendar">View Full Calendar &rarr;</button>
+                </div>
+              </div>
+
+              <!-- Quick Productivity Tip -->
+              <div class="companion-card tip-card">
+                <h5 class="tip-card-title">💡 Mindful Tip</h5>
+                <p class="tip-card-text">
+                  Break large goals into bite-sized subtasks. Checking them off releases natural momentum!
+                </p>
+              </div>
+
+            </div>
+          </aside>
+
+        </div>
+      </section>
+
+      <!-- ================= 2. CALENDAR VIEW ================= -->
+      <section id="view-calendar" class="view-panel" aria-label="Monthly Calendar View">
+        <div class="view-container">
+          
+          <div class="calendar-view-card">
+            <!-- Calendar Navigation Header -->
+            <div class="calendar-header-bar">
+              <div class="month-title-wrap">
+                <h2 class="view-heading" id="cal-month-year-title">October 2026</h2>
+                <button class="btn-text-small" id="cal-btn-today">Today</button>
+              </div>
+              <div class="cal-nav-btns">
+                <button class="icon-btn-circle" id="cal-prev-month-btn" aria-label="Previous Month">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+                <button class="icon-btn-circle" id="cal-next-month-btn" aria-label="Next Month">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Weekday Headers (Sun to Sat) -->
+            <div class="cal-weekdays-grid" aria-hidden="true">
+              <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+            </div>
+
+            <!-- Month Days Grid -->
+            <div class="cal-days-grid" id="cal-days-grid">
+              <!-- Rendered via script.js -->
+            </div>
+          </div>
+
+          <!-- Tasks on Selected Calendar Date -->
+          <div class="calendar-selected-day-section">
+            <div class="selected-day-header">
+              <h3 class="section-title" id="cal-selected-day-title">Tasks for Today</h3>
+              <button class="btn-primary-pill-small" id="cal-add-for-date-btn">+ Add for This Day</button>
+            </div>
+            
+            <ul class="task-list" id="cal-selected-task-list">
+              <!-- Dynamic list of tasks for selected calendar date -->
+            </ul>
+            
+            <div class="empty-state-card hidden" id="cal-empty-state">
+              <div class="empty-icon-art">🍃</div>
+              <h4 class="empty-title">Peaceful day!</h4>
+              <p class="empty-message">No tasks scheduled for this day yet.</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ================= 3. STATS VIEW ================= -->
+      <section id="view-stats" class="view-panel" aria-label="Statistics and Insights">
+        <div class="view-container">
+          
+          <div class="stats-screen-header">
+            <h2 class="view-heading">Your Mindful Insights</h2>
+            <p class="view-subheading">Track your progress, build daily streaks, and cultivate calm momentum.</p>
+          </div>
+
+          <!-- Big Number Hero Card -->
+          <div class="stats-hero-card">
+            <div class="stats-hero-content">
+              <span class="stats-hero-label">Total Completed Tasks</span>
+              <div class="stats-huge-number" id="stats-total-completed">0</div>
+              <p class="stats-hero-quote" id="stats-motivation-quote">
+                "Every completed task is a gentle victory for your mind."
+              </p>
+            </div>
+            <div class="stats-hero-sparkle" aria-hidden="true">✨</div>
+          </div>
+
+          <!-- Grid of Key Metrics Cards -->
+          <div class="stats-metrics-grid">
+            
+            <div class="metric-card">
+              <div class="metric-icon-wrap bg-soft-yellow">🔥</div>
+              <div class="metric-info">
+                <span class="metric-number" id="stats-streak-val">0</span>
+                <span class="metric-label">Day Streak</span>
+              </div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-icon-wrap bg-soft-green">🎯</div>
+              <div class="metric-info">
+                <span class="metric-number" id="stats-completion-rate">0%</span>
+                <span class="metric-label">Completion Rate</span>
+              </div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-icon-wrap bg-soft-lavender">⏳</div>
+              <div class="metric-info">
+                <span class="metric-number" id="stats-pending-val">0</span>
+                <span class="metric-label">Pending Tasks</span>
+              </div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-icon-wrap bg-soft-pink">⚠️</div>
+              <div class="metric-info">
+                <span class="metric-number" id="stats-overdue-val">0</span>
+                <span class="metric-label">Overdue Tasks</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Main Pill Bars Breakdown Card -->
+          <div class="stats-card harmony-large-card">
+            <h3 class="section-title">Task Distribution &amp; Harmony</h3>
+            <p class="stats-card-hint">Visualizing your life balance across task statuses</p>
+            
+            <div class="harmony-bars-container large" aria-label="Task Distribution">
+              <div class="harmony-bar-col">
+                <div class="pill-bar-track">
+                  <div class="pill-bar-fill fill-success" id="stats-bar-completed" style="height: 0%;"></div>
+                </div>
+                <span class="bar-value" id="stats-bar-val-completed">0%</span>
+                <span class="bar-name">Completed</span>
+              </div>
+
+              <div class="harmony-bar-col">
+                <div class="pill-bar-track">
+                  <div class="pill-bar-fill fill-primary" id="stats-bar-pending" style="height: 0%;"></div>
+                </div>
+                <span class="bar-value" id="stats-bar-val-pending">0%</span>
+                <span class="bar-name">Pending</span>
+              </div>
+
+              <div class="harmony-bar-col">
+                <div class="pill-bar-track">
+                  <div class="pill-bar-fill fill-danger" id="stats-bar-overdue" style="height: 0%;"></div>
+                </div>
+                <span class="bar-value" id="stats-bar-val-overdue">0%</span>
+                <span class="bar-name">Overdue</span>
+              </div>
+
+              <div class="harmony-bar-col">
+                <div class="pill-bar-track">
+                  <div class="pill-bar-fill fill-neutral" id="stats-bar-today" style="height: 0%;"></div>
+                </div>
+                <span class="bar-value" id="stats-bar-val-today">0%</span>
+                <span class="bar-name">Today's Goal</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Weekly Completion Bar Chart -->
+          <div class="stats-card">
+            <h3 class="section-title">7-Day Completion Activity</h3>
+            <p class="stats-card-hint">Tasks completed each day over the past 7 days</p>
+            
+            <div class="weekly-barchart-container" id="weekly-barchart">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Bottom Action -->
+          <div class="stats-bottom-action">
+            <button class="btn-primary-big-pill" id="stats-create-task-btn">
+              <span>+ Create a New Task</span>
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ================= 4. PROFILE & SETTINGS VIEW ================= -->
+      <section id="view-profile" class="view-panel" aria-label="Profile and Settings">
+        <div class="view-container profile-container">
+          
+          <div class="profile-header-card">
+            <div class="profile-avatar-large" id="profile-avatar-display">
+              <span id="profile-big-avatar-emoji">🌻</span>
+            </div>
+            <div class="profile-details">
+              <h2 class="profile-display-name" id="profile-display-name">Friend</h2>
+              <p class="profile-tagline">Mindful Journaling &amp; Daily Organizer</p>
+            </div>
+          </div>
+
+          <!-- Edit Profile Form Card -->
+          <div class="settings-card">
+            <h3 class="settings-group-title">User Profile</h3>
+            
+            <div class="form-group">
+              <label for="settings-name-input">Your Display Name</label>
+              <input type="text" id="settings-name-input" class="form-input" placeholder="Enter your name" maxlength="30" />
+            </div>
+
+            <div class="form-group">
+              <label>Select Avatar Emoji</label>
+              <div class="avatar-picker-grid" id="avatar-picker-grid">
+                <button type="button" class="avatar-option" data-emoji="🌻">🌻</button>
+                <button type="button" class="avatar-option" data-emoji="🌿">🌿</button>
+                <button type="button" class="avatar-option" data-emoji="🌸">🌸</button>
+                <button type="button" class="avatar-option" data-emoji="☕">☕</button>
+                <button type="button" class="avatar-option" data-emoji="✨">✨</button>
+                <button type="button" class="avatar-option" data-emoji="🐱">🐱</button>
+                <button type="button" class="avatar-option" data-emoji="🎨">🎨</button>
+                <button type="button" class="avatar-option" data-emoji="🧘">🧘</button>
+              </div>
+            </div>
+
+            <button type="button" class="btn-primary-pill" id="save-profile-btn">Save Profile</button>
+          </div>
+
+          <!-- Preferences & Theme Card -->
+          <div class="settings-card">
+            <h3 class="settings-group-title">App Preferences</h3>
+
+            <div class="settings-row">
+              <div class="settings-info">
+                <span class="setting-title">Theme</span>
+                <span class="setting-desc">Warm journaling cream or cozy espresso dark mode</span>
+              </div>
+              <div class="theme-switch-group">
+                <button type="button" class="theme-btn active" data-theme-val="light">☀️ Light</button>
+                <button type="button" class="theme-btn" data-theme-val="dark">🌙 Dark</button>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-info">
+                <span class="setting-title">Time Format</span>
+                <span class="setting-desc">Display clock and due times in 12h or 24h</span>
+              </div>
+              <div class="toggle-switch-wrap">
+                <button type="button" class="time-format-btn active" data-time-format="12h">12h AM/PM</button>
+                <button type="button" class="time-format-btn" data-time-format="24h">24h</button>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-info">
+                <span class="setting-title">Chime Sounds</span>
+                <span class="setting-desc">Play a calming harmonic bell chime on reminders</span>
+              </div>
+              <label class="switch-toggle" for="toggle-sound-chime">
+                <input type="checkbox" id="toggle-sound-chime" checked />
+                <span class="switch-slider"></span>
+              </label>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-info">
+                <span class="setting-title">Browser Notifications</span>
+                <span class="setting-desc" id="browser-notif-status">Native system push alerts when reminders trigger</span>
+              </div>
+              <button type="button" class="btn-secondary-pill" id="btn-request-notification">
+                Enable Alerts
+              </button>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-info">
+                <span class="setting-title">Default Reminder Lead</span>
+                <span class="setting-desc">Preset reminder time for new tasks</span>
+              </div>
+              <select id="settings-default-reminder" class="settings-select">
+                <option value="none">No reminder</option>
+                <option value="at-time">At time of event</option>
+                <option value="5m">5 minutes before</option>
+                <option value="15m" selected>15 minutes before</option>
+                <option value="30m">30 minutes before</option>
+                <option value="1h">1 hour before</option>
+                <option value="1d">1 day before</option>
+              </select>
+            </div>
+
+          </div>
+
+          <!-- Data Backup & Reset Card -->
+          <div class="settings-card">
+            <h3 class="settings-group-title">Data &amp; Storage</h3>
+            <p class="settings-card-hint">
+              All your tasks are safely preserved in your browser's localStorage. You can backup or restore anytime.
+            </p>
+
+            <div class="data-actions-grid">
+              <button type="button" class="btn-action-tile" id="btn-export-json">
+                <span class="tile-icon">💾</span>
+                <span class="tile-title">Export Backup</span>
+                <span class="tile-sub">Download JSON file</span>
+              </button>
+
+              <label class="btn-action-tile btn-import-label" for="json-file-input">
+                <span class="tile-icon">📂</span>
+                <span class="tile-title">Import Backup</span>
+                <span class="tile-sub">Restore from JSON</span>
+                <input type="file" id="json-file-input" accept=".json,application/json" class="sr-only" />
+              </label>
+            </div>
+
+            <div class="danger-zone-divider"></div>
+
+            <div class="danger-zone-row">
+              <div class="danger-text">
+                <span class="danger-title">Reset Everything</span>
+                <span class="danger-desc">Erase all tasks, habits, and reset to default sample data</span>
+              </div>
+              <button type="button" class="btn-danger-pill" id="btn-reset-data">Reset All Data</button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- MOBILE BOTTOM NAVIGATION BAR -->
+    <nav class="mobile-bottom-nav" aria-label="Mobile Navigation">
+      <button class="nav-item active" data-view="home" aria-label="Home">
+        <span class="nav-icon" aria-hidden="true">🏠</span>
+        <span class="nav-text">Home</span>
+      </button>
+
+      <button class="nav-item" data-view="calendar" aria-label="Calendar">
+        <span class="nav-icon" aria-hidden="true">📅</span>
+        <span class="nav-text">Calendar</span>
+      </button>
+
+      <!-- Center Floating Yellow Action Button -->
+      <div class="fab-wrapper">
+        <button class="fab-circle-btn" id="mobile-fab-btn" aria-label="Add New Task" title="Add New Task">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </button>
+      </div>
+
+      <button class="nav-item" data-view="stats" aria-label="Stats">
+        <span class="nav-icon" aria-hidden="true">📊</span>
+        <span class="nav-text">Stats</span>
+      </button>
+
+      <button class="nav-item" data-view="profile" aria-label="Profile">
+        <span class="nav-icon" aria-hidden="true">👤</span>
+        <span class="nav-text">Profile</span>
+      </button>
+    </nav>
+
+  </div>
+
+  <!-- ================= MODALS & OVERLAYS ================= -->
+
+  <!-- 1. ADD / EDIT TASK MODAL (Bottom sheet on mobile, Dialog on desktop) -->
+  <div id="task-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-window sheet-modal" id="task-modal-window">
+      
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <div class="modal-sheet-pill-handle" aria-hidden="true"></div>
+          <h3 class="modal-title" id="modal-title">Add New Task</h3>
+        </div>
+        <button class="icon-btn-close" id="modal-close-btn" aria-label="Close dialog">&times;</button>
+      </div>
+
+      <!-- Task Form -->
+      <form id="task-form" class="modal-form" novalidate>
+        <input type="hidden" id="task-id-field" value="" />
+
+        <!-- Title Field -->
+        <div class="form-group">
+          <label for="task-title-input">Task Title <span class="required-star">*</span></label>
+          <input 
+            type="text" 
+            id="task-title-input" 
+            class="form-input" 
+            placeholder="e.g. Read chapter 4 of mindful book" 
+            maxlength="120" 
+            required 
+            autocomplete="off" 
+          />
+          <span class="field-error-msg hidden" id="title-error-msg">Please enter a task title.</span>
+        </div>
+
+        <!-- Description Field -->
+        <div class="form-group">
+          <label for="task-desc-input">Description / Notes <span class="optional-hint">(optional)</span></label>
+          <textarea 
+            id="task-desc-input" 
+            class="form-textarea" 
+            rows="2" 
+            placeholder="Add mindful details, steps, or reflections..."
+          ></textarea>
+        </div>
+
+        <!-- Category Selector Chips -->
+        <div class="form-group">
+          <label>Category</label>
+          <div class="category-chips-group" id="form-category-chips">
+            <button type="button" class="chip-option cat-personal active" data-cat="Personal">🌸 Personal</button>
+            <button type="button" class="chip-option cat-work" data-cat="Work">💼 Work</button>
+            <button type="button" class="chip-option cat-family" data-cat="Family">🏡 Family</button>
+            <button type="button" class="chip-option cat-health" data-cat="Health">🥑 Health</button>
+            <button type="button" class="chip-option cat-study" data-cat="Study">📚 Study</button>
+          </div>
+          <input type="hidden" id="task-category-field" value="Personal" />
+        </div>
+
+        <!-- Priority Selector -->
+        <div class="form-group">
+          <label>Priority</label>
+          <div class="priority-pills-group" id="form-priority-pills">
+            <button type="button" class="priority-pill-option prio-low" data-priority="Low">Low</button>
+            <button type="button" class="priority-pill-option prio-medium active" data-priority="Medium">Medium</button>
+            <button type="button" class="priority-pill-option prio-high" data-priority="High">High ⚡</button>
+          </div>
+          <input type="hidden" id="task-priority-field" value="Medium" />
+        </div>
+
+        <!-- Date & Time Row -->
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="task-due-date">Due Date</label>
+            <input type="date" id="task-due-date" class="form-input" />
+            <span class="field-error-msg hidden" id="date-warning-msg">Due date is in the past.</span>
+          </div>
+
+          <div class="form-group">
+            <label for="task-due-time">Due Time</label>
+            <input type="time" id="task-due-time" class="form-input" />
+          </div>
+        </div>
+
+        <!-- Reminder & Repeat Row -->
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="task-reminder-select">Reminder</label>
+            <select id="task-reminder-select" class="form-select">
+              <option value="none">No reminder</option>
+              <option value="at-time">At time of event</option>
+              <option value="5m">5 minutes before</option>
+              <option value="15m" selected>15 minutes before</option>
+              <option value="30m">30 minutes before</option>
+              <option value="1h">1 hour before</option>
+              <option value="1d">1 day before</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="task-repeat-select">Repeat</label>
+            <select id="task-repeat-select" class="form-select">
+              <option value="none" selected>Never (None)</option>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Subtasks Checklist Section -->
+        <div class="form-group subtasks-form-group">
+          <label>Checklist / Subtasks</label>
+          <div class="subtask-add-row">
+            <input type="text" id="new-subtask-input" class="form-input" placeholder="Add a subtask step..." maxlength="80" />
+            <button type="button" class="btn-secondary-pill" id="btn-add-subtask">+ Add</button>
+          </div>
+          <ul class="modal-subtask-list" id="modal-subtask-list">
+            <!-- Dynamically populated checklist items -->
+          </ul>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="modal-action-row">
+          <button type="button" class="btn-cancel-pill" id="modal-cancel-btn">Cancel</button>
+          <button type="submit" class="btn-primary-pill" id="modal-save-btn">Save Task</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. CUSTOM CONFIRMATION DIALOG -->
+  <div id="confirm-modal" class="modal-backdrop hidden" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-desc">
+    <div class="modal-window confirm-window">
+      <div class="confirm-icon-wrap" id="confirm-icon">⚠️</div>
+      <h3 class="confirm-title" id="confirm-title">Are you sure?</h3>
+      <p class="confirm-desc" id="confirm-desc">This action cannot be undone.</p>
+      
+      <div class="confirm-actions-row">
+        <button type="button" class="btn-cancel-pill" id="confirm-cancel-btn">Cancel</button>
+        <button type="button" class="btn-danger-pill" id="confirm-proceed-btn">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. REMINDER ALERT BANNER / POPUP (with Snooze, Done, Dismiss) -->
+  <div id="reminder-alert-modal" class="modal-backdrop hidden" role="alertdialog" aria-modal="true" aria-labelledby="reminder-title">
+    <div class="modal-window reminder-window">
+      <div class="reminder-header">
+        <div class="bell-pulse-icon" aria-hidden="true">🔔</div>
+        <div>
+          <span class="reminder-badge">Gentle Reminder</span>
+          <h3 class="reminder-title" id="reminder-title">Task Due Now</h3>
+        </div>
+      </div>
+      <p class="reminder-task-name" id="reminder-task-title">Drink water &amp; stretch</p>
+      <p class="reminder-time-label" id="reminder-time-info">Scheduled for 3:00 PM</p>
+      
+      <div class="reminder-actions-grid">
+        <button type="button" class="btn-reminder-done" id="reminder-btn-done">✓ Mark Done</button>
+        <button type="button" class="btn-reminder-snooze" id="reminder-btn-snooze">⏰ Snooze 10m</button>
+        <button type="button" class="btn-reminder-dismiss" id="reminder-btn-dismiss">Dismiss</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. TOAST CONTAINER (Top-right desktop, top mobile) -->
+  <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true">
+    <!-- Toasts injected dynamically by script.js -->
+  </div>
+
+  <!-- 5. CONFETTI CANVAS (for celebration when daily tasks are all done) -->
+  <canvas id="confetti-canvas" class="confetti-canvas" aria-hidden="true"></canvas>
+
+  <!-- Application Script -->
+  <script src="script.js"></script>
+</body>
+</html>

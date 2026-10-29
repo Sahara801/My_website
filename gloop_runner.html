@@ -1,0 +1,3961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+  <title>Gloop's Endless Adventure - The Game That Never Ends</title>
+  <style>
+    /* ==========================================================================
+       GLOOP'S ENDLESS RUNNER - STYLESHEET
+       Self-contained, responsive, arcade-style aesthetic
+       ========================================================================== */
+    :root {
+      --bg-dark: #12131c;
+      --card-bg: rgba(26, 28, 44, 0.85);
+      --accent-pink: #ff4081;
+      --accent-gold: #ffc107;
+      --accent-blue: #00e5ff;
+      --accent-green: #00e676;
+      --text-main: #ffffff;
+      --text-muted: #a0a5c0;
+      --font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: radial-gradient(circle at 50% 20%, #1e2238 0%, #0d0e15 100%);
+      color: var(--text-main);
+      font-family: var(--font-family);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      padding: 10px;
+    }
+
+    /* Container wrapper for the game */
+    #game-container {
+      position: relative;
+      width: 100%;
+      max-width: 1000px;
+      display: flex;
+      flex-direction: column;
+      background: var(--card-bg);
+      border-radius: 18px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+
+    /* Top HUD Navigation Bar */
+    header.game-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 18px;
+      background: rgba(18, 19, 32, 0.95);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      gap: 10px;
+      z-index: 10;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-icon {
+      font-size: 1.8rem;
+      animation: floatIcon 2.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes floatIcon {
+      from { transform: translateY(0) rotate(0deg); }
+      to { transform: translateY(-4px) rotate(6deg); }
+    }
+
+    .brand-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      background: linear-gradient(135deg, #ff7eb3 0%, #ff758c 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .stats-bar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .stat-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .stat-pill.score-pill {
+      color: var(--accent-gold);
+      border-color: rgba(255, 193, 7, 0.3);
+      background: rgba(255, 193, 7, 0.1);
+    }
+
+    .stat-pill.lives-pill {
+      color: #ff5252;
+      border-color: rgba(255, 82, 82, 0.3);
+      background: rgba(255, 82, 82, 0.1);
+      letter-spacing: 1px;
+    }
+
+    .stat-pill.speed-pill {
+      color: #00e5ff;
+      border-color: rgba(0, 229, 255, 0.3);
+      background: rgba(0, 229, 255, 0.1);
+      font-weight: 800;
+    }
+
+    .stat-pill.donut-pill {
+      color: #e040fb;
+      border-color: rgba(224, 64, 251, 0.3);
+      background: rgba(224, 64, 251, 0.1);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-action {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      padding: 7px 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-action:hover {
+      background: rgba(255, 255, 255, 0.18);
+      transform: translateY(-1px);
+    }
+
+    .btn-action:active {
+      transform: translateY(1px);
+    }
+
+    /* Weather & Season Ticker Line */
+    .season-ticker {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 18px;
+      background: rgba(14, 15, 24, 0.9);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .season-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .season-badge {
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .season-buttons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-season {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+      padding: 4px 9px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-season:hover, .btn-season.active {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Canvas Viewport */
+    .canvas-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #000;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    canvas#gameCanvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+    }
+
+    /* On-Screen Mobile Touch Controls */
+    .touch-controls {
+      display: none;
+      position: absolute;
+      bottom: 12px;
+      left: 0;
+      width: 100%;
+      padding: 0 16px;
+      pointer-events: none;
+      justify-content: space-between;
+      z-index: 15;
+    }
+
+    .touch-btn {
+      pointer-events: auto;
+      width: 82px;
+      height: 82px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.25);
+      border: 3px solid rgba(255, 255, 255, 0.5);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+      color: #ffffff;
+      font-size: 1.1rem;
+      font-weight: 800;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      backdrop-filter: blur(8px);
+      transition: transform 0.1s, background 0.1s;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: none;
+    }
+
+    .touch-btn:active, .touch-btn.pressed {
+      transform: scale(0.92);
+      background: rgba(255, 255, 255, 0.45);
+      border-color: #fff;
+    }
+
+    .touch-btn span.label {
+      font-size: 0.72rem;
+      letter-spacing: 0.5px;
+    }
+
+    /* Overlay screens (Pause, Start Instructions) */
+    .overlay-screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(10, 11, 20, 0.82);
+      backdrop-filter: blur(8px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      z-index: 20;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .overlay-screen.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .overlay-title {
+      font-size: 2.4rem;
+      font-weight: 900;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #ff7eb3, #ff758c, #ffc107);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 4px 20px rgba(255, 64, 129, 0.3);
+    }
+
+    .overlay-desc {
+      font-size: 1rem;
+      max-width: 500px;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .overlay-btn {
+      background: linear-gradient(135deg, var(--accent-pink), #e02468);
+      border: none;
+      color: #fff;
+      padding: 12px 30px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(255, 64, 129, 0.4);
+      transition: all 0.2s ease;
+    }
+
+    .overlay-btn:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 12px 30px rgba(255, 64, 129, 0.6);
+    }
+
+    /* Bottom Info & Keyboard Hints */
+    footer.game-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 18px;
+      background: rgba(18, 19, 32, 0.95);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .key-hints {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .key-hint {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    kbd {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+      padding: 2px 7px;
+      font-family: inherit;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #fff;
+      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.4);
+    }
+
+    .feature-tags {
+      display: flex;
+      gap: 8px;
+    }
+
+    .feature-tag {
+      font-size: 0.72rem;
+      color: var(--accent-green);
+      background: rgba(0, 230, 118, 0.1);
+      padding: 2px 8px;
+      border-radius: 12px;
+      border: 1px solid rgba(0, 230, 118, 0.2);
+    }
+
+    /* ==========================================================================
+       MOBILE RESPONSIVE & CUTE ADAPTIVE LAYOUT (< 768px)
+       Full-screen native mobile arcade feel, chunky pastel thumb controls,
+       compact HUD, and zero clutter.
+       ========================================================================== */
+    .mobile-control-bar {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 0;
+        margin: 0;
+        width: 100vw;
+        height: 100dvh;
+        height: 100vh;
+        overflow: hidden;
+        justify-content: flex-start;
+      }
+
+      #game-container {
+        width: 100vw;
+        height: 100dvh;
+        height: 100vh;
+        max-width: 100%;
+        border-radius: 0;
+        border: none;
+        box-shadow: none;
+        background: #0d0e17;
+      }
+
+      /* Compact, Cute Top Header on Phone */
+      header.game-header {
+        padding: 8px 10px;
+        gap: 6px;
+        flex-wrap: nowrap;
+        background: rgba(18, 19, 32, 0.98);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .brand {
+        gap: 6px;
+        flex-shrink: 0;
+      }
+
+      .brand-icon {
+        font-size: 1.3rem;
+      }
+
+      .brand-title {
+        font-size: 1rem;
+        letter-spacing: 0.2px;
+      }
+
+      .stats-bar {
+        gap: 5px;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+      }
+      .stats-bar::-webkit-scrollbar {
+        display: none;
+      }
+
+      .stat-pill {
+        padding: 4px 7px;
+        font-size: 0.74rem;
+        border-radius: 12px;
+        gap: 3px;
+        white-space: nowrap;
+      }
+
+      .stat-pill span[style*="opacity"] {
+        display: none; /* Hide "| BEST:" verbose label to keep pills clean */
+      }
+
+      .header-actions {
+        gap: 5px;
+        flex-shrink: 0;
+      }
+
+      .btn-action {
+        width: 34px;
+        height: 34px;
+        padding: 0;
+        justify-content: center;
+        border-radius: 50%;
+      }
+
+      .btn-action span#mute-text {
+        display: none; /* Icon only */
+      }
+
+      /* Compact Weather Bar */
+      .season-ticker {
+        padding: 4px 10px;
+        font-size: 0.72rem;
+        flex-wrap: nowrap;
+        gap: 6px;
+        background: rgba(14, 15, 24, 0.95);
+      }
+
+      .season-info {
+        gap: 6px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      #hud-weather {
+        display: none; /* Keep ticker ultra-clean on phone */
+      }
+
+      .season-buttons {
+        gap: 3px;
+        flex-shrink: 0;
+      }
+
+      .btn-season {
+        padding: 2px 6px;
+        font-size: 0.68rem;
+        border-radius: 6px;
+      }
+
+      /* Canvas flexible gaming area */
+      .canvas-wrapper {
+        flex: 1;
+        min-height: 0;
+        width: 100%;
+        aspect-ratio: auto; /* Let flex occupy natural screen height */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #000;
+      }
+
+      canvas#gameCanvas {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      /* On-screen touch controls in canvas are hidden in portrait; dedicated bottom bar is used */
+      .touch-controls {
+        display: none !important;
+      }
+
+      /* Mobile Dedicated Bottom Control Deck */
+      .mobile-control-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 12px;
+        padding-bottom: max(10px, env(safe-area-inset-bottom));
+        background: rgba(14, 15, 26, 0.98);
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        gap: 10px;
+        z-index: 25;
+      }
+
+      .mobile-btn {
+        flex: 1;
+        height: 60px;
+        border: none;
+        border-radius: 18px;
+        color: #ffffff;
+        font-family: inherit;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        cursor: pointer;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        transition: transform 0.08s ease, filter 0.08s ease;
+      }
+
+      .mobile-btn:active, .mobile-btn.pressed {
+        transform: scale(0.93);
+        filter: brightness(1.25);
+      }
+
+      .mobile-btn.btn-duck {
+        background: linear-gradient(135deg, #673ab7, #536dfe);
+        box-shadow: 0 6px 18px rgba(103, 58, 183, 0.35);
+      }
+
+      .mobile-btn.btn-jump {
+        background: linear-gradient(135deg, #ff4081, #f50057);
+        box-shadow: 0 6px 18px rgba(255, 64, 129, 0.4);
+      }
+
+      .mobile-btn .btn-icon {
+        font-size: 1.35rem;
+      }
+
+      .mobile-btn .btn-labels {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        line-height: 1.1;
+      }
+
+      .mobile-btn .btn-title {
+        font-size: 0.92rem;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+      }
+
+      .mobile-btn .btn-sub {
+        font-size: 0.65rem;
+        font-weight: 600;
+        opacity: 0.85;
+      }
+
+      .mobile-hint {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        font-size: 0.62rem;
+        color: var(--text-muted);
+        line-height: 1.2;
+        text-align: center;
+      }
+
+      /* Hide PC keyboard hints footer on phone */
+      footer.game-footer {
+        display: none !important;
+      }
+
+      /* Scaled cute modals for mobile */
+      .overlay-screen {
+        padding: 18px 14px;
+      }
+
+      .overlay-title {
+        font-size: 1.6rem;
+        margin-bottom: 8px;
+      }
+
+      .overlay-desc {
+        font-size: 0.84rem;
+        line-height: 1.45;
+        margin-bottom: 16px;
+      }
+
+      .overlay-btn {
+        padding: 11px 26px;
+        font-size: 0.95rem;
+        border-radius: 24px;
+      }
+    }
+
+    /* Landscape Mode on Phone (Hold phone sideways) */
+    @media (max-width: 900px) and (orientation: landscape) {
+      body {
+        padding: 0;
+        height: 100vh;
+      }
+
+      #game-container {
+        height: 100vh;
+        width: 100vw;
+        border-radius: 0;
+      }
+
+      header.game-header {
+        padding: 4px 12px;
+      }
+
+      .season-ticker {
+        display: none !important;
+      }
+
+      .mobile-control-bar {
+        display: none !important;
+      }
+
+      /* In landscape, show floating corner thumb buttons */
+      .touch-controls {
+        display: flex !important;
+        position: absolute;
+        bottom: 10px;
+        left: 0;
+        width: 100%;
+        padding: 0 16px;
+        pointer-events: none;
+        justify-content: space-between;
+        z-index: 25;
+      }
+
+      .touch-btn {
+        pointer-events: auto;
+        width: 68px;
+        height: 68px;
+      }
+    }
+
+    /* Respect reduced motion preference */
+    @media (prefers-reduced-motion: reduce) {
+      .brand-icon {
+        animation: none;
+      }
+      * {
+        animation-duration: 0.001ms !important;
+        transition-duration: 0.001ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Main Game Container -->
+  <div id="game-container">
+    
+    <!-- Top Header HUD -->
+    <header class="game-header">
+      <div class="brand">
+        <span class="brand-icon">🎀</span>
+        <div class="brand-title">GLOOP'S RUNNER</div>
+      </div>
+
+      <div class="stats-bar">
+        <div class="stat-pill score-pill" title="Distance Travelled">
+          <span>🏃</span> <span id="hud-score">0 m</span>
+          <span style="opacity: 0.6; margin-left: 4px;">| BEST:</span>
+          <span id="hud-best-score">0 m</span>
+        </div>
+
+        <div class="stat-pill lives-pill" title="Player Lives (3 Hearts)">
+          <span>❤️</span> <span id="hud-lives">❤️❤️❤️</span>
+        </div>
+
+        <div class="stat-pill speed-pill" title="Speed Multiplier">
+          <span>⚡</span> <span id="hud-speed">1.0x</span>
+        </div>
+
+        <div class="stat-pill donut-pill" title="Donuts Collected & Hats">
+          <span>🍩</span> <span id="hud-donuts">0</span>
+          <span style="opacity: 0.6; margin-left: 4px;">| 🎩</span>
+          <span id="hud-hats">0/5</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="btn-mute" class="btn-action" title="Toggle Sound">
+          <span id="mute-icon">🔊</span> <span id="mute-text">Sound</span>
+        </button>
+        <button id="btn-pause" class="btn-action" title="Pause Game (P)">
+          <span id="pause-icon">⏸️</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Season & Dynamic Weather Ticker -->
+    <div class="season-ticker">
+      <div class="season-info">
+        <div class="season-badge" id="hud-season-name">🍂 Autumn</div>
+        <div id="hud-day">Day 1</div>
+        <div id="hud-temp">14°C</div>
+        <div id="hud-weather" style="color: #cbd5e1;">Brisk Breeze & Swirling Leaves</div>
+      </div>
+
+      <div class="season-buttons">
+        <button class="btn-season" data-season="0" title="Switch to Spring">🌸 Spring</button>
+        <button class="btn-season" data-season="1" title="Switch to Summer">☀️ Summer</button>
+        <button class="btn-season" data-season="2" title="Switch to Autumn">🍂 Autumn</button>
+        <button class="btn-season" data-season="3" title="Switch to Winter">❄️ Winter</button>
+      </div>
+    </div>
+
+    <!-- Canvas Game Viewport -->
+    <div class="canvas-wrapper" id="canvas-wrapper">
+      <canvas id="gameCanvas"></canvas>
+
+      <!-- On-Screen Mobile Touch Controls -->
+      <div class="touch-controls">
+        <button id="touch-duck" class="touch-btn" aria-label="Duck">
+          <span>🛡️</span>
+          <span class="label">DUCK</span>
+        </button>
+        <button id="touch-jump" class="touch-btn" aria-label="Jump / Double Jump">
+          <span>🦘</span>
+          <span class="label">JUMP x2</span>
+        </button>
+      </div>
+
+      <!-- Start Overlay Screen -->
+      <div id="start-overlay" class="overlay-screen visible">
+        <h1 class="overlay-title">Meet Gloop!</h1>
+        <p class="overlay-desc">
+          Run, dodge, and jump through the four seasons!<br>
+          ✨ <strong>Double-tap Jump (<kbd>↑</kbd> <kbd>↑</kbd> or <kbd>Space</kbd> <kbd>Space</kbd>)</strong> for an athletic mid-air somersault!<br>
+          ⚡ Speed increases dynamically as your distance climbs.<br>
+          🍩 Collect donuts to stack up to 5 goofy hats and watch Gloop celebrate higher scores with triumphant shouts & a golden aura!
+        </p>
+        <button id="btn-start" class="overlay-btn">TAP / CLICK TO RUN</button>
+      </div>
+
+      <!-- Pause Overlay Screen -->
+      <div id="pause-overlay" class="overlay-screen">
+        <h2 class="overlay-title">PAUSED</h2>
+        <p class="overlay-desc">Catch your breath! Gloop is waiting for you.</p>
+        <button id="btn-resume" class="overlay-btn">RESUME RUN</button>
+      </div>
+
+      <!-- Game Over Overlay Screen -->
+      <div id="gameover-overlay" class="overlay-screen">
+        <h1 class="overlay-title" style="color: #ff5252;">💥 GAME OVER 💥</h1>
+        <div id="gameover-record-badge" style="display: none; background: rgba(255, 215, 0, 0.2); border: 1px solid #ffd700; color: #ffd700; padding: 6px 16px; border-radius: 20px; font-weight: 800; font-size: 0.95rem; margin-bottom: 14px;">🏆 NEW ALL-TIME BEST RECORD!</div>
+        <p class="overlay-desc">
+          Distance Travelled: <strong id="go-score" style="color: #ffc107; font-size: 1.25rem;">0 m</strong><br>
+          Donuts: <strong id="go-donuts" style="color: #e040fb;">0</strong> | Hats Unlocked: <strong id="go-hats" style="color: #00e5ff;">0/5</strong><br>
+          Max Speed Reached: <strong id="go-speed" style="color: #00e676;">1.0x</strong>
+        </p>
+        <button id="btn-restart" class="overlay-btn">PLAY AGAIN (SPACE)</button>
+      </div>
+    </div>
+
+    <!-- Mobile Dedicated Touch Control Deck (Visible on Phone) -->
+    <div class="mobile-control-bar">
+      <button id="mobile-duck" class="mobile-btn btn-duck" aria-label="Duck">
+        <span class="btn-icon">🛡️</span>
+        <div class="btn-labels">
+          <span class="btn-title">DUCK</span>
+          <span class="btn-sub">HOLD TO SLIDE</span>
+        </div>
+      </button>
+
+      <button id="mobile-jump" class="mobile-btn btn-jump" aria-label="Jump / Double Jump">
+        <span class="btn-icon">🦘</span>
+        <div class="btn-labels">
+          <span class="btn-title">JUMP</span>
+          <span class="btn-sub">TAP x2 FLIP</span>
+        </div>
+      </button>
+    </div>
+
+    <!-- Bottom Footer Hints -->
+    <footer class="game-footer">
+      <div class="key-hints">
+        <div class="key-hint"><kbd>Space</kbd> or <kbd>↑</kbd> Jump</div>
+        <div class="key-hint"><kbd>↑</kbd> <kbd>↑</kbd> Double Jump</div>
+        <div class="key-hint">Hold <kbd>↓</kbd> or <kbd>S</kbd> Duck</div>
+        <div class="key-hint"><kbd>P</kbd> Pause</div>
+        <div class="key-hint"><kbd>M</kbd> Mute</div>
+      </div>
+
+      <div class="feature-tags">
+        <span class="feature-tag">🦘 Mid-Air Double Jump</span>
+        <span class="feature-tag">⚡ Dynamic Speed Rush</span>
+        <span class="feature-tag">🏆 Record Celebrations</span>
+        <span class="feature-tag">🎩 5 Stackable Hats</span>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Game Logic Script -->
+  <script>
+    /**
+     * GLOOP'S ENDLESS RUNNER
+     * A rich single-file canvas game with procedural Web Audio synthesis,
+     * smooth seasonal blending, dynamic growth, stackable hats, and physics.
+     */
+    (function () {
+      'use strict';
+
+      // Canvas roundRect polyfill for maximum browser compatibility
+      if (!CanvasRenderingContext2D.prototype.roundRect) {
+        CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, radii = 0) {
+          const r = typeof radii === 'number' ? [radii, radii, radii, radii] : radii;
+          const tl = r[0] || 0, tr = r[1] || 0, br = r[2] || 0, bl = r[3] || 0;
+          this.beginPath();
+          this.moveTo(x + tl, y);
+          this.lineTo(x + w - tr, y);
+          this.quadraticCurveTo(x + w, y, x + w, y + tr);
+          this.lineTo(x + w, y + h - br);
+          this.quadraticCurveTo(x + w, y + h, x + w - br, y + h);
+          this.lineTo(x + bl, y + h);
+          this.quadraticCurveTo(x, y + h, x, y + h - bl);
+          this.lineTo(x, y + tl);
+          this.quadraticCurveTo(x, y, x + tl, y);
+          this.closePath();
+          return this;
+        };
+      }
+
+      // =========================================================================
+      // 1. CONFIGURATION & CONSTANTS
+      // =========================================================================
+      const VIRTUAL_WIDTH = 960;
+      const VIRTUAL_HEIGHT = 540;
+      const GROUND_Y = 440; // Ground line in virtual coordinates
+
+      const SEASON_NAMES = ['Spring', 'Summer', 'Autumn', 'Winter'];
+      const SEASON_ICONS = ['🌸', '☀️', '🍂', '❄️'];
+      const SEASON_DURATION_SEC = 36.0; // 36s per season
+      const SEASON_TRANSITION_SEC = 4.0; // 4s smooth color blend
+
+      // Speed configuration
+      const INITIAL_SPEED = 320; // Virtual pixels per second
+      const MAX_SPEED = 820;
+      const SPEED_ACCELERATION = 1.25; // Speed increase per second
+
+      // Reduced motion check
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // =========================================================================
+      // 2. PROCEDURAL WEB AUDIO SYNTHESIS ENGINE
+      // =========================================================================
+      class SoundEngine {
+        constructor() {
+          this.ctx = null;
+          this.masterGain = null;
+          this.isMuted = false;
+          this.initialized = false;
+        }
+
+        init() {
+          if (this.initialized) return;
+          try {
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            this.ctx = new AudioContextClass();
+            this.masterGain = this.ctx.createGain();
+            this.masterGain.gain.setValueAtTime(this.isMuted ? 0 : 0.45, this.ctx.currentTime);
+            this.masterGain.connect(this.ctx.destination);
+            this.initialized = true;
+          } catch (e) {
+            console.warn('Web Audio API not supported or blocked:', e);
+          }
+        }
+
+        resume() {
+          if (this.ctx && this.ctx.state === 'suspended') {
+            this.ctx.resume();
+          }
+        }
+
+        toggleMute() {
+          this.isMuted = !this.isMuted;
+          if (this.masterGain && this.ctx) {
+            this.masterGain.gain.cancelScheduledValues(this.ctx.currentTime);
+            this.masterGain.gain.setValueAtTime(this.isMuted ? 0 : 0.45, this.ctx.currentTime);
+          }
+          return this.isMuted;
+        }
+
+        /**
+         * Calculates pitch factor based on Gloop's current growth scale.
+         * As Gloop grows from 1.0 to 2.4, his voice deepens!
+         */
+        getPitchFactor(scale) {
+          const s = Math.max(1.0, scale || 1.0);
+          return 1.0 / (1.0 + (s - 1.0) * 0.42);
+        }
+
+        /**
+         * Play one of the 5 weird jump sounds at random:
+         * Random weird sound picked on every jump:
+         * 1. boing, 2. squeak, 3. bubblepop, 4. wheee, 5. quack
+         */
+        playJumpSound(gloopScale) {
+          if (!this.initialized || this.isMuted) return;
+          this.resume();
+
+          const pitch = this.getPitchFactor(gloopScale);
+          const sounds = ['boing', 'squeak', 'bubblepop', 'wheee', 'quack'];
+          const picked = sounds[Math.floor(Math.random() * sounds.length)];
+
+          const t = this.ctx.currentTime;
+
+          switch (picked) {
+            case 'boing':
+              this._playBoing(t, pitch);
+              break;
+            case 'squeak':
+              this._playSqueak(t, pitch);
+              break;
+            case 'bubblepop':
+              this._playBubblePop(t, pitch);
+              break;
+            case 'wheee':
+              this._playWheee(t, pitch);
+              break;
+            case 'quack':
+              this._playQuack(t, pitch);
+              break;
+          }
+        }
+
+        // 1. Boing: rubbery cartoon spring boing
+        _playBoing(t, pitch) {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          const lfo = this.ctx.createOscillator();
+          const lfoGain = this.ctx.createGain();
+
+          osc.type = 'sine';
+          const baseFreq = 160 * pitch;
+          const targetFreq = 480 * pitch;
+
+          osc.frequency.setValueAtTime(baseFreq, t);
+          osc.frequency.exponentialRampToValueAtTime(targetFreq, t + 0.1);
+
+          // Fast vibrato decay
+          lfo.type = 'sine';
+          lfo.frequency.setValueAtTime(22, t);
+          lfoGain.gain.setValueAtTime(60 * pitch, t);
+          lfoGain.gain.exponentialRampToValueAtTime(1, t + 0.35);
+
+          lfo.connect(osc.frequency);
+          osc.connect(gain);
+          gain.connect(this.masterGain);
+
+          gain.gain.setValueAtTime(0.01, t);
+          gain.gain.linearRampToValueAtTime(0.5, t + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.38);
+
+          lfo.start(t);
+          osc.start(t);
+          lfo.stop(t + 0.4);
+          osc.stop(t + 0.4);
+        }
+
+        // 2. Squeak: high-pitched cute chirp
+        _playSqueak(t, pitch) {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+
+          osc.type = 'sine';
+          const startF = 850 * pitch;
+          const peakF = 1800 * pitch;
+          const endF = 1100 * pitch;
+
+          osc.frequency.setValueAtTime(startF, t);
+          osc.frequency.linearRampToValueAtTime(peakF, t + 0.05);
+          osc.frequency.exponentialRampToValueAtTime(endF, t + 0.14);
+
+          gain.gain.setValueAtTime(0.01, t);
+          gain.gain.linearRampToValueAtTime(0.4, t + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+
+          osc.connect(gain);
+          gain.connect(this.masterGain);
+
+          osc.start(t);
+          osc.stop(t + 0.2);
+        }
+
+        // 3. Bubble Pop: satisfying, playful cartoon water-drop pop & chime
+        _playBubblePop(t, pitch) {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+
+          osc.type = 'sine';
+          const baseF = 400 * pitch;
+          const peakF = 980 * pitch;
+
+          osc.frequency.setValueAtTime(baseF, t);
+          osc.frequency.exponentialRampToValueAtTime(peakF, t + 0.04);
+          osc.frequency.exponentialRampToValueAtTime(peakF * 0.72, t + 0.14);
+
+          gain.gain.setValueAtTime(0.01, t);
+          gain.gain.linearRampToValueAtTime(0.45, t + 0.012);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.16);
+
+          osc.connect(gain);
+          gain.connect(this.masterGain);
+
+          osc.start(t);
+          osc.stop(t + 0.18);
+        }
+
+        // 4. Wheee: playful rising glide with sweet vibrato
+        _playWheee(t, pitch) {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          const lfo = this.ctx.createOscillator();
+          const lfoGain = this.ctx.createGain();
+
+          osc.type = 'triangle';
+          const startF = 260 * pitch;
+          const endF = 620 * pitch;
+
+          osc.frequency.setValueAtTime(startF, t);
+          osc.frequency.exponentialRampToValueAtTime(endF, t + 0.38);
+
+          lfo.type = 'sine';
+          lfo.frequency.setValueAtTime(7.5, t);
+          lfoGain.gain.setValueAtTime(25 * pitch, t);
+
+          lfo.connect(osc.frequency);
+          osc.connect(gain);
+          gain.connect(this.masterGain);
+
+          gain.gain.setValueAtTime(0.01, t);
+          gain.gain.linearRampToValueAtTime(0.45, t + 0.05);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.42);
+
+          lfo.start(t);
+          osc.start(t);
+          lfo.stop(t + 0.45);
+          osc.stop(t + 0.45);
+        }
+
+        // 5. Quack: filtered resonant formant sweep
+        _playQuack(t, pitch) {
+          const osc = this.ctx.createOscillator();
+          const filter = this.ctx.createBiquadFilter();
+          const gain = this.ctx.createGain();
+
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(280 * pitch, t);
+          osc.frequency.linearRampToValueAtTime(170 * pitch, t + 0.22);
+
+          filter.type = 'bandpass';
+          filter.Q.setValueAtTime(5.5, t);
+          filter.frequency.setValueAtTime(1150 * pitch, t);
+          filter.frequency.exponentialRampToValueAtTime(450 * pitch, t + 0.22);
+
+          gain.gain.setValueAtTime(0.01, t);
+          gain.gain.linearRampToValueAtTime(0.48, t + 0.03);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.24);
+
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(this.masterGain);
+
+          osc.start(t);
+          osc.stop(t + 0.26);
+        }
+
+        // Bonk sound: cartoon dizzy thud + spring wobble
+        playBonk() {
+          if (!this.initialized || this.isMuted) return;
+          this.resume();
+          const t = this.ctx.currentTime;
+
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(220, t);
+          osc.frequency.exponentialRampToValueAtTime(55, t + 0.25);
+
+          gain.gain.setValueAtTime(0.6, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
+
+          osc.connect(gain);
+          gain.connect(this.masterGain);
+
+          osc.start(t);
+          osc.stop(t + 0.32);
+
+          // Cartoon dizzy chime ring
+          const chime = this.ctx.createOscillator();
+          const chimeGain = this.ctx.createGain();
+          chime.type = 'triangle';
+          chime.frequency.setValueAtTime(540, t + 0.05);
+          chime.frequency.linearRampToValueAtTime(320, t + 0.4);
+
+          chimeGain.gain.setValueAtTime(0.01, t);
+          chimeGain.gain.linearRampToValueAtTime(0.25, t + 0.06);
+          chimeGain.gain.exponentialRampToValueAtTime(0.001, t + 0.45);
+
+          chime.connect(chimeGain);
+          chimeGain.connect(this.masterGain);
+
+          chime.start(t + 0.05);
+          chime.stop(t + 0.48);
+        }
+
+        // Donut collect chime: bright happy sparkle
+        playDonutCollect() {
+          if (!this.initialized || this.isMuted) return;
+          this.resume();
+          const t = this.ctx.currentTime;
+
+          const notes = [880, 1174, 1567]; // A5, D6, G6
+          notes.forEach((freq, idx) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            const start = t + idx * 0.055;
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, start);
+
+            gain.gain.setValueAtTime(0.01, start);
+            gain.gain.linearRampToValueAtTime(0.3, start + 0.01);
+            gain.gain.exponentialRampToValueAtTime(0.001, start + 0.22);
+
+            osc.connect(gain);
+            gain.connect(this.masterGain);
+
+            osc.start(start);
+            osc.stop(start + 0.25);
+          });
+        }
+
+        // New Hat unlocked fanfare!
+        playHatFanfare() {
+          if (!this.initialized || this.isMuted) return;
+          this.resume();
+          const t = this.ctx.currentTime;
+          const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+
+          notes.forEach((freq, idx) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            const start = t + idx * 0.08;
+
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, start);
+
+            gain.gain.setValueAtTime(0.01, start);
+            gain.gain.linearRampToValueAtTime(0.4, start + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.001, start + 0.35);
+
+            osc.connect(gain);
+            gain.connect(this.masterGain);
+
+            osc.start(start);
+            osc.stop(start + 0.4);
+          });
+        }
+
+        // Duck woosh
+        playDuck() {
+          if (!this.initialized || this.isMuted) return;
+          this.resume();
+          const t = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(320, t);
+          osc.frequency.exponentialRampToValueAtTime(140, t + 0.12);
+
+          gain.gain.setValueAtTime(0.18, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.14);
+
+          osc.connect(gain);
+          gain.connect(this.masterGain);
+
+          osc.start(t);
+          osc.stop(t + 0.15);
+        }
+
+        // Double Jump sound: bright spring chirp with sparkle
+        playDoubleJump(gloopScale) {
+          if (!this.initialized || this.isMuted) return;
+          this.resume();
+          const pitch = this.getPitchFactor(gloopScale);
+          const t = this.ctx.currentTime;
+
+          const osc1 = this.ctx.createOscillator();
+          const osc2 = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+
+          osc1.type = 'sine';
+          osc1.frequency.setValueAtTime(380 * pitch, t);
+          osc1.frequency.exponentialRampToValueAtTime(920 * pitch, t + 0.16);
+
+          osc2.type = 'triangle';
+          osc2.frequency.setValueAtTime(580 * pitch, t);
+          osc2.frequency.exponentialRampToValueAtTime(1380 * pitch, t + 0.18);
+
+          gain.gain.setValueAtTime(0.01, t);
+          gain.gain.linearRampToValueAtTime(0.4, t + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
+
+          osc1.connect(gain);
+          osc2.connect(gain);
+          gain.connect(this.masterGain);
+
+          osc1.start(t);
+          osc2.start(t);
+          osc1.stop(t + 0.24);
+          osc2.stop(t + 0.24);
+        }
+
+        // Milestone fanfare when reaching score targets
+        playMilestoneFanfare() {
+          if (!this.initialized || this.isMuted) return;
+          this.resume();
+          const t = this.ctx.currentTime;
+          const freqs = [440, 554.37, 659.25, 880]; // A4, C#5, E5, A5
+          freqs.forEach((freq, idx) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            const st = t + idx * 0.07;
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, st);
+            gain.gain.setValueAtTime(0.01, st);
+            gain.gain.linearRampToValueAtTime(0.35, st + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.001, st + 0.28);
+            osc.connect(gain);
+            gain.connect(this.masterGain);
+            osc.start(st);
+            osc.stop(st + 0.3);
+          });
+        }
+
+        // Game Over sad cartoon slide
+        playGameOver() {
+          if (!this.initialized || this.isMuted) return;
+          this.resume();
+          const t = this.ctx.currentTime;
+          const freqs = [330, 311.13, 293.66, 261.63]; // E4, Eb4, D4, C4
+          freqs.forEach((freq, idx) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            const st = t + idx * 0.16;
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(freq, st);
+            osc.frequency.exponentialRampToValueAtTime(freq * 0.88, st + 0.18);
+            gain.gain.setValueAtTime(0.01, st);
+            gain.gain.linearRampToValueAtTime(0.35, st + 0.03);
+            gain.gain.exponentialRampToValueAtTime(0.001, st + 0.22);
+            osc.connect(gain);
+            gain.connect(this.masterGain);
+            osc.start(st);
+            osc.stop(st + 0.24);
+          });
+        }
+
+        // Unique Sound Effects for Striking Different Obstacles
+        playObstacleHit(type, gloopScale) {
+          if (!this.initialized || this.isMuted) return;
+          this.resume();
+          const pitch = this.getPitchFactor(gloopScale);
+          const t = this.ctx.currentTime;
+
+          switch (type) {
+            case 'mushroom': this._playMushroomSquish(t, pitch); break;
+            case 'bumblebee': this._playBeeZap(t, pitch); break;
+            case 'rosebush': this._playRosebushSnap(t, pitch); break;
+            case 'cactus': this._playCactusPrick(t, pitch); break;
+            case 'tumbleweed': this._playTumbleweedCrackle(t, pitch); break;
+            case 'seagull': this._playSeagullSquawk(t, pitch); break;
+            case 'pumpkin': this._playPumpkinThonk(t, pitch); break;
+            case 'scarecrow': this._playScarecrowFlump(t, pitch); break;
+            case 'raven': this._playRavenCaw(t, pitch); break;
+            case 'snowman': this._playSnowmanSplat(t, pitch); break;
+            case 'icespikes': this._playIceShatter(t, pitch); break;
+            case 'snowball': this._playSnowballWhump(t, pitch); break;
+            default: this.playBonk(); break;
+          }
+        }
+
+        _playMushroomSquish(t, pitch) {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(340 * pitch, t);
+          osc.frequency.exponentialRampToValueAtTime(110 * pitch, t + 0.15);
+          osc.frequency.linearRampToValueAtTime(180 * pitch, t + 0.22);
+          gain.gain.setValueAtTime(0.55, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.28);
+          osc.connect(gain);
+          gain.connect(this.masterGain);
+          osc.start(t);
+          osc.stop(t + 0.3);
+        }
+
+        _playBeeZap(t, pitch) {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(560 * pitch, t);
+          osc.frequency.exponentialRampToValueAtTime(220 * pitch, t + 0.16);
+          gain.gain.setValueAtTime(0.01, t);
+          gain.gain.linearRampToValueAtTime(0.4, t + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+          osc.connect(gain);
+          gain.connect(this.masterGain);
+          osc.start(t);
+          osc.stop(t + 0.2);
+        }
+
+        _playRosebushSnap(t, pitch) {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(650 * pitch, t);
+          osc.frequency.exponentialRampToValueAtTime(180 * pitch, t + 0.12);
+          gain.gain.setValueAtTime(0.5, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.18);
+          osc.connect(gain);
+          gain.connect(this.masterGain);
+          osc.start(t);
+          osc.stop(t + 0.2);
+        }
+
+        _playCactusPrick(t, pitch) {
+          const osc1 = this.ctx.createOscillator();
+          const osc2 = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc1.type = 'sine';
+          osc1.frequency.setValueAtTime(820 * pitch, t);
+          osc1.frequency.exponentialRampToValueAtTime(260 * pitch, t + 0.14);
+          osc2.type = 'triangle';
+          osc2.frequency.setValueAtTime(1250 * pitch, t);
+          osc2.frequency.exponentialRampToValueAtTime(450 * pitch, t + 0.08);
+          gain.gain.setValueAtTime(0.48, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.18);
+          osc1.connect(gain);
+          osc2.connect(gain);
+          gain.connect(this.masterGain);
+          osc1.start(t);
+          osc2.start(t);
+          osc1.stop(t + 0.2);
+          osc2.stop(t + 0.2);
+        }
+
+        _playTumbleweedCrackle(t, pitch) {
+          for (let i = 0; i < 3; i++) {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            const st = t + i * 0.045;
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime((350 + i * 150) * pitch, st);
+            osc.frequency.exponentialRampToValueAtTime(90 * pitch, st + 0.04);
+            gain.gain.setValueAtTime(0.35, st);
+            gain.gain.exponentialRampToValueAtTime(0.01, st + 0.05);
+            osc.connect(gain);
+            gain.connect(this.masterGain);
+            osc.start(st);
+            osc.stop(st + 0.06);
+          }
+        }
+
+        _playSeagullSquawk(t, pitch) {
+          const osc = this.ctx.createOscillator();
+          const filter = this.ctx.createBiquadFilter();
+          const gain = this.ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(850 * pitch, t);
+          osc.frequency.linearRampToValueAtTime(420 * pitch, t + 0.26);
+          filter.type = 'bandpass';
+          filter.Q.setValueAtTime(6.0, t);
+          filter.frequency.setValueAtTime(1400 * pitch, t);
+          filter.frequency.linearRampToValueAtTime(700 * pitch, t + 0.26);
+          gain.gain.setValueAtTime(0.42, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.28);
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(this.masterGain);
+          osc.start(t);
+          osc.stop(t + 0.3);
+        }
+
+        _playPumpkinThonk(t, pitch) {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(240 * pitch, t);
+          osc.frequency.exponentialRampToValueAtTime(65 * pitch, t + 0.22);
+          gain.gain.setValueAtTime(0.65, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.28);
+          osc.connect(gain);
+          gain.connect(this.masterGain);
+          osc.start(t);
+          osc.stop(t + 0.3);
+        }
+
+        _playScarecrowFlump(t, pitch) {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(160 * pitch, t);
+          osc.frequency.exponentialRampToValueAtTime(45 * pitch, t + 0.25);
+          gain.gain.setValueAtTime(0.55, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
+          osc.connect(gain);
+          gain.connect(this.masterGain);
+          osc.start(t);
+          osc.stop(t + 0.32);
+        }
+
+        _playRavenCaw(t, pitch) {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(290 * pitch, t);
+          osc.frequency.linearRampToValueAtTime(210 * pitch, t + 0.28);
+          gain.gain.setValueAtTime(0.45, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
+          osc.connect(gain);
+          gain.connect(this.masterGain);
+          osc.start(t);
+          osc.stop(t + 0.32);
+        }
+
+        _playSnowmanSplat(t, pitch) {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(280 * pitch, t);
+          osc.frequency.exponentialRampToValueAtTime(50 * pitch, t + 0.2);
+          gain.gain.setValueAtTime(0.55, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.25);
+          osc.connect(gain);
+          gain.connect(this.masterGain);
+          osc.start(t);
+          osc.stop(t + 0.28);
+        }
+
+        _playIceShatter(t, pitch) {
+          const freqs = [1750, 2400, 3150];
+          freqs.forEach((f, idx) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            const st = t + idx * 0.02;
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(f * pitch, st);
+            gain.gain.setValueAtTime(0.3, st);
+            gain.gain.exponentialRampToValueAtTime(0.001, st + 0.22);
+            osc.connect(gain);
+            gain.connect(this.masterGain);
+            osc.start(st);
+            osc.stop(st + 0.25);
+          });
+        }
+
+        _playSnowballWhump(t, pitch) {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(120 * pitch, t);
+          osc.frequency.exponentialRampToValueAtTime(32 * pitch, t + 0.28);
+          gain.gain.setValueAtTime(0.65, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.34);
+          osc.connect(gain);
+          gain.connect(this.masterGain);
+          osc.start(t);
+          osc.stop(t + 0.36);
+        }
+      }
+
+      // =========================================================================
+      // 3. COLOR MATH & SEASON PALETTES
+      // =========================================================================
+      function hexToRgb(hex) {
+        const clean = hex.replace('#', '');
+        const bigint = parseInt(clean, 16);
+        return {
+          r: (bigint >> 16) & 255,
+          g: (bigint >> 8) & 255,
+          b: bigint & 255
+        };
+      }
+
+      function lerpColor(hexA, hexB, factor) {
+        const a = hexToRgb(hexA);
+        const b = hexToRgb(hexB);
+        const f = Math.max(0, Math.min(1, factor));
+        const r = Math.round(a.r + (b.r - a.r) * f);
+        const g = Math.round(a.g + (b.g - a.g) * f);
+        const bl = Math.round(a.b + (b.b - a.b) * f);
+        return `rgb(${r}, ${g}, ${bl})`;
+      }
+
+      const SEASONS_DATA = [
+        { // 0: Spring
+          name: 'Spring',
+          icon: '🌸',
+          skyTop: '#6ba3e8',
+          skyBottom: '#fed6e3',
+          sunColor: '#fff5cc',
+          sunSize: 42,
+          farHills: '#8ec5a5',
+          midHills: '#60b07a',
+          nearHills: '#3e965b',
+          groundTop: '#4ba868',
+          groundSub: '#2e7545',
+          weatherDesc: 'Spring Drizzle & Drifting Petals',
+          baseTemp: 18,
+          particlesType: 'spring'
+        },
+        { // 1: Summer
+          name: 'Summer',
+          icon: '☀️',
+          skyTop: '#1a78c2',
+          skyBottom: '#91d8f7',
+          skyStormTop: '#1c2833',
+          skyStormBottom: '#34495e',
+          sunColor: '#fff089',
+          sunSize: 56,
+          farHills: '#82c39d',
+          midHills: '#4da563',
+          nearHills: '#2d8844',
+          groundTop: '#3aa152',
+          groundSub: '#226934',
+          weatherDesc: 'Bright Sun & Golden Warmth',
+          weatherStormDesc: 'Monsoon Clouds & Lightning Flashes',
+          baseTemp: 32,
+          particlesType: 'summer'
+        },
+        { // 2: Autumn
+          name: 'Autumn',
+          icon: '🍂',
+          skyTop: '#373265',
+          skyBottom: '#e67e22',
+          sunColor: '#f39c12',
+          sunSize: 46,
+          farHills: '#b57252',
+          midHills: '#a0522d',
+          nearHills: '#7c3f1d',
+          groundTop: '#8d5524',
+          groundSub: '#583212',
+          weatherDesc: 'Brisk Wind & Swirling Leaves',
+          baseTemp: 13,
+          particlesType: 'autumn'
+        },
+        { // 3: Winter
+          name: 'Winter',
+          icon: '❄️',
+          skyTop: '#6e7f96',
+          skyBottom: '#e2ebf3',
+          sunColor: '#ffffff',
+          sunSize: 38,
+          farHills: '#b0c4de',
+          midHills: '#8ea4c0',
+          nearHills: '#6c85a3',
+          groundTop: '#f0f5fa',
+          groundSub: '#bcc9d6',
+          weatherDesc: 'Frosty Breeze & Dancing Snowfall',
+          baseTemp: -2,
+          particlesType: 'winter'
+        }
+      ];
+
+      // =========================================================================
+      // 4. PARTICLE SYSTEMS (Weather & Effects)
+      // =========================================================================
+      class ParticleSystem {
+        constructor() {
+          this.weatherParticles = [];
+          this.impactParticles = [];
+          this.floatingTexts = [];
+          this.maxWeather = prefersReducedMotion ? 25 : 95;
+          this.initWeatherPool();
+        }
+
+        initWeatherPool() {
+          this.weatherParticles = [];
+          for (let i = 0; i < this.maxWeather; i++) {
+            this.weatherParticles.push({
+              x: Math.random() * VIRTUAL_WIDTH,
+              y: Math.random() * VIRTUAL_HEIGHT,
+              vx: 0,
+              vy: 0,
+              size: 2 + Math.random() * 4,
+              angle: Math.random() * Math.PI * 2,
+              vRot: (Math.random() - 0.5) * 4,
+              type: 'petal',
+              color: '#fff',
+              seed: Math.random() * 100
+            });
+          }
+        }
+
+        update(dt, seasonIndex, isSummerMonsoon) {
+          const season = SEASONS_DATA[seasonIndex];
+
+          // Update ambient weather particles
+          for (let p of this.weatherParticles) {
+            p.angle += p.vRot * dt;
+
+            if (seasonIndex === 0) { // Spring: light drizzle + cherry petals
+              if (p.seed > 40) {
+                // Petal
+                p.type = 'petal';
+                p.color = Math.sin(p.seed) > 0 ? '#ffb7c5' : '#ffccd5';
+                p.vx = 45 + Math.sin(p.y * 0.02 + p.seed) * 20;
+                p.vy = 40 + Math.cos(p.x * 0.02) * 15;
+              } else {
+                // Drizzle
+                p.type = 'rain';
+                p.color = 'rgba(200, 235, 255, 0.45)';
+                p.vx = 60;
+                p.vy = 280;
+              }
+            } else if (seasonIndex === 1) { // Summer: heat shimmer / monsoon rain
+              if (isSummerMonsoon) {
+                p.type = 'storm-rain';
+                p.color = 'rgba(180, 220, 255, 0.65)';
+                p.vx = 90;
+                p.vy = 420;
+              } else {
+                p.type = 'pollen';
+                p.color = 'rgba(255, 240, 160, 0.5)';
+                p.vx = 25 + Math.sin(p.y * 0.01) * 15;
+                p.vy = -15 + Math.cos(p.x * 0.01) * 10;
+              }
+            } else if (seasonIndex === 2) { // Autumn: falling leaves
+              p.type = 'leaf';
+              const leafColors = ['#e67e22', '#d35400', '#f39c12', '#c0392b'];
+              p.color = leafColors[Math.floor(p.seed * 10) % leafColors.length];
+              p.vx = 90 + Math.sin(p.y * 0.03 + p.seed) * 40;
+              p.vy = 65 + Math.cos(p.x * 0.02) * 25;
+            } else { // Winter: snow
+              p.type = 'snow';
+              p.color = 'rgba(255, 255, 255, 0.85)';
+              p.vx = 35 + Math.sin(p.y * 0.02 + p.seed) * 20;
+              p.vy = 55 + (p.seed % 40);
+            }
+
+            p.x += p.vx * dt;
+            p.y += p.vy * dt;
+
+            // Screen wrap
+            if (p.x > VIRTUAL_WIDTH + 20) p.x = -20;
+            if (p.x < -20) p.x = VIRTUAL_WIDTH + 20;
+            if (p.y > VIRTUAL_HEIGHT) {
+              p.y = -10;
+              p.x = Math.random() * VIRTUAL_WIDTH;
+            }
+            if (p.y < -20) p.y = VIRTUAL_HEIGHT + 10;
+          }
+
+          // Update impact & burst particles
+          for (let i = this.impactParticles.length - 1; i >= 0; i--) {
+            const p = this.impactParticles[i];
+            p.x += p.vx * dt;
+            p.y += p.vy * dt;
+            p.vy += p.gravity * dt;
+            p.life -= dt;
+            p.alpha = Math.max(0, p.life / p.maxLife);
+            if (p.life <= 0) {
+              this.impactParticles.splice(i, 1);
+            }
+          }
+
+          // Update floating text indicators
+          for (let i = this.floatingTexts.length - 1; i >= 0; i--) {
+            const ft = this.floatingTexts[i];
+            ft.y += ft.vy * dt;
+            ft.life -= dt;
+            ft.alpha = Math.max(0, ft.life / ft.maxLife);
+            if (ft.life <= 0) {
+              this.floatingTexts.splice(i, 1);
+            }
+          }
+        }
+
+        drawWeather(ctx) {
+          ctx.save();
+          for (let p of this.weatherParticles) {
+            ctx.fillStyle = p.color;
+            ctx.strokeStyle = p.color;
+
+            if (p.type === 'rain' || p.type === 'storm-rain') {
+              ctx.lineWidth = p.type === 'storm-rain' ? 2 : 1.2;
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(p.x + p.vx * 0.04, p.y + p.vy * 0.04);
+              ctx.stroke();
+            } else if (p.type === 'leaf' || p.type === 'petal') {
+              ctx.save();
+              ctx.translate(p.x, p.y);
+              ctx.rotate(p.angle);
+              ctx.beginPath();
+              ctx.ellipse(0, 0, p.size * 1.5, p.size * 0.8, 0, 0, Math.PI * 2);
+              ctx.fill();
+              ctx.restore();
+            } else { // Snow / pollen
+              ctx.beginPath();
+              ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          }
+          ctx.restore();
+        }
+
+        drawEffects(ctx) {
+          ctx.save();
+          // Draw burst particles
+          for (let p of this.impactParticles) {
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = p.alpha;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size * p.alpha, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          // Draw floating comic text
+          for (let ft of this.floatingTexts) {
+            ctx.save();
+            ctx.globalAlpha = ft.alpha;
+            ctx.font = `900 ${ft.fontSize}px sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.fillStyle = ft.color;
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 4;
+            ctx.strokeText(ft.text, ft.x, ft.y);
+            ctx.fillText(ft.text, ft.x, ft.y);
+            ctx.restore();
+          }
+          ctx.restore();
+        }
+
+        spawnDonutSparkles(x, y) {
+          if (prefersReducedMotion) return;
+          const colors = ['#ff4081', '#ffeb3b', '#00e5ff', '#76ff03', '#ffffff'];
+          for (let i = 0; i < 18; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const speed = 70 + Math.random() * 160;
+            this.impactParticles.push({
+              x: x,
+              y: y,
+              vx: Math.cos(angle) * speed,
+              vy: Math.sin(angle) * speed,
+              gravity: 180,
+              size: 3 + Math.random() * 4,
+              color: colors[i % colors.length],
+              life: 0.65,
+              maxLife: 0.65,
+              alpha: 1
+            });
+          }
+        }
+
+        spawnBonkStars(x, y) {
+          if (prefersReducedMotion) return;
+          const colors = ['#ffeb3b', '#ff5722', '#ffffff'];
+          for (let i = 0; i < 12; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const speed = 60 + Math.random() * 120;
+            this.impactParticles.push({
+              x: x,
+              y: y,
+              vx: Math.cos(angle) * speed,
+              vy: Math.sin(angle) * speed,
+              gravity: 120,
+              size: 4 + Math.random() * 3,
+              color: colors[i % colors.length],
+              life: 0.8,
+              maxLife: 0.8,
+              alpha: 1
+            });
+          }
+        }
+
+        spawnJumpCloud(x, y) {
+          if (prefersReducedMotion) return;
+          for (let i = 0; i < 7; i++) {
+            const angle = Math.PI * (0.8 + Math.random() * 0.4);
+            const speed = 40 + Math.random() * 60;
+            this.impactParticles.push({
+              x: x + (Math.random() - 0.5) * 24,
+              y: y,
+              vx: Math.cos(angle) * speed,
+              vy: Math.sin(angle) * speed * 0.4,
+              gravity: 40,
+              size: 5 + Math.random() * 5,
+              color: 'rgba(255, 255, 255, 0.85)',
+              life: 0.45,
+              maxLife: 0.45,
+              alpha: 1
+            });
+          }
+        }
+
+        spawnConfetti(x, y) {
+          if (prefersReducedMotion) return;
+          const colors = ['#ffd700', '#ff4081', '#00e5ff', '#76ff03', '#ffffff', '#e040fb'];
+          for (let i = 0; i < 28; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const speed = 90 + Math.random() * 180;
+            this.impactParticles.push({
+              x: x,
+              y: y,
+              vx: Math.cos(angle) * speed,
+              vy: Math.sin(angle) * speed - 60,
+              gravity: 240,
+              size: 4 + Math.random() * 4,
+              color: colors[i % colors.length],
+              life: 1.1,
+              maxLife: 1.1,
+              alpha: 1
+            });
+          }
+        }
+
+        drawSpeedLines(ctx, speedRatio) {
+          if (speedRatio < 1.3 || prefersReducedMotion) return;
+          ctx.save();
+          const lineAlpha = Math.min(0.35, (speedRatio - 1.3) * 0.4);
+          ctx.strokeStyle = `rgba(255, 255, 255, ${lineAlpha})`;
+          ctx.lineWidth = 1.5;
+          const t = performance.now() * 0.002;
+          for (let i = 0; i < 6; i++) {
+            const y = 80 + i * 65 + Math.sin(t + i) * 15;
+            const xOffset = ((t * 800 * speedRatio + i * 200) % (VIRTUAL_WIDTH + 300)) - 100;
+            ctx.beginPath();
+            ctx.moveTo(VIRTUAL_WIDTH - xOffset, y);
+            ctx.lineTo(VIRTUAL_WIDTH - xOffset - 120 * speedRatio, y);
+            ctx.stroke();
+          }
+          ctx.restore();
+        }
+
+        addFloatingText(text, x, y, color = '#ffeb3b', size = 24) {
+          this.floatingTexts.push({
+            text: text,
+            x: x,
+            y: y,
+            vy: -45,
+            color: color,
+            fontSize: size,
+            life: 1.1,
+            maxLife: 1.1,
+            alpha: 1
+          });
+        }
+      }
+
+      // =========================================================================
+      // 5. GLOOP CHARACTER CLASS
+      // =========================================================================
+      class Gloop {
+        constructor() {
+          this.x = 140; // Virtual horizontal anchor
+          this.y = GROUND_Y;
+          this.vy = 0;
+          this.isGrounded = true;
+          this.isDucking = false;
+
+          // Lives & Game Over
+          this.lives = 3;
+          this.maxLives = 3;
+
+          // Double Jump mechanics
+          this.jumpCount = 0; // 0: grounded, 1: first jump, 2: double jump
+          this.isDoubleJumping = false;
+          this.flipAngle = 0;
+
+          // Scale & Growth mechanics (1.0 up to ~2.4)
+          this.baseRadius = 28;
+          this.scale = 1.0;
+          this.growthTimer = 0;
+          this.maxScale = 2.4;
+
+          // Squash & Stretch
+          this.squashX = 1.0;
+          this.squashY = 1.0;
+          this.runCycle = 0;
+
+          // Bonk & Invulnerability state
+          this.isBonking = false;
+          this.bonkTimer = 0;
+          this.bonkSpinAngle = 0;
+          this.invulnerableTimer = 0;
+          this.totalBonks = 0;
+
+          // Hats Stack (up to 5 stacked hats)
+          this.hatsCount = 0; // Unlocked via donuts (1 hat per 4 donuts)
+
+          // Googly eyes inertia
+          this.leftPupilOffset = { x: 3, y: 0 };
+          this.rightPupilOffset = { x: 3, y: 0 };
+
+          // Physics tuning: Snappy, instant takeoff + responsive high jumps
+          this.gravity = 2400;
+          this.jumpVelocity = -900;
+          this.doubleJumpVelocity = -860;
+          this.duckFastFall = 3800;
+
+          // Input responsiveness: Jump buffer & Coyote time
+          this.jumpBufferTimer = 0; // Remembers jump input up to 160ms before touching ground
+          this.coyoteTimer = 0;     // Allows jump for 120ms after leaving ground
+        }
+
+        jump(soundEngine, particleSystem) {
+          if (this.isBonking) return;
+
+          // If grounded or within coyote time (0.12s): First Jump immediately!
+          if (this.isGrounded || this.coyoteTimer > 0) {
+            this._executeFirstJump(soundEngine);
+          } else if (this.jumpCount === 1) {
+            // Mid-air double jump!
+            this._executeDoubleJump(soundEngine, particleSystem);
+          } else {
+            // Buffer jump input so if we touch ground within 0.16s, we jump instantaneously
+            this.jumpBufferTimer = 0.16;
+          }
+        }
+
+        _executeFirstJump(soundEngine) {
+          this.vy = this.jumpVelocity;
+          this.isGrounded = false;
+          this.jumpCount = 1;
+          this.isDoubleJumping = false;
+          this.flipAngle = 0;
+          this.coyoteTimer = 0;
+          this.jumpBufferTimer = 0;
+          this.squashX = 0.72;
+          this.squashY = 1.35;
+          if (soundEngine) soundEngine.playJumpSound(this.scale);
+        }
+
+        _executeDoubleJump(soundEngine, particleSystem) {
+          this.jumpCount = 2;
+          this.vy = this.doubleJumpVelocity;
+          this.isDoubleJumping = true;
+          this.flipAngle = 0;
+          this.jumpBufferTimer = 0;
+          this.squashX = 0.7;
+          this.squashY = 1.35;
+          if (soundEngine) soundEngine.playDoubleJump(this.scale);
+          if (particleSystem) {
+            particleSystem.spawnJumpCloud(this.x, this.y - 10);
+            particleSystem.addFloatingText('DOUBLE JUMP!', this.x, this.y - this.getVisualHeight() - 15, '#00e5ff', 20);
+          }
+        }
+
+        duck(active, soundEngine) {
+          if (this.isBonking) return;
+          if (active && !this.isDucking) {
+            soundEngine.playDuck();
+          }
+          this.isDucking = active;
+        }
+
+        triggerBonk(soundEngine, particleSystem) {
+          if (this.invulnerableTimer > 0) return; // Protected during recovery
+
+          this.totalBonks++;
+          this.isBonking = true;
+          this.bonkTimer = 0.68; // Under 1s dizziness
+          this.bonkSpinAngle = 0;
+          this.invulnerableTimer = 1.5; // ~1.5s invulnerability
+          this.vy = -260; // Cute little hop on bonk
+
+          particleSystem.spawnBonkStars(this.x, this.y - this.getVisualHeight() / 2);
+
+          const comicTexts = ['BONK!', 'OUCH!', 'BOOP!', 'WHOOPS!'];
+          const picked = comicTexts[Math.floor(Math.random() * comicTexts.length)];
+          particleSystem.addFloatingText(picked, this.x, this.y - this.getVisualHeight() - 20, '#ff5252', 26);
+        }
+
+        update(dt, speedFactor, soundEngine, particleSystem) {
+          // Slow continuous growth up to 2.4x
+          if (this.scale < this.maxScale) {
+            this.growthTimer += dt;
+            // Full growth reaches 2.4x over ~200 seconds of running
+            this.scale = Math.min(this.maxScale, 1.0 + (this.growthTimer / 210) * (this.maxScale - 1.0));
+          }
+
+          // Bonk spin logic
+          if (this.isBonking) {
+            this.bonkTimer -= dt;
+            this.bonkSpinAngle += dt * Math.PI * 6.5; // Dizzy fast tumble spin
+            if (this.bonkTimer <= 0) {
+              this.isBonking = false;
+              this.bonkSpinAngle = 0;
+            }
+          }
+
+          // Double jump somersault flip
+          if (this.isDoubleJumping) {
+            this.flipAngle += dt * Math.PI * 8.5;
+            if (this.flipAngle >= Math.PI * 2) {
+              this.flipAngle = 0;
+              this.isDoubleJumping = false;
+            }
+          }
+
+          // Invulnerability timer
+          if (this.invulnerableTimer > 0) {
+            this.invulnerableTimer -= dt;
+          }
+
+          // Coyote time decay (allows jump briefly after walking off edge/bump)
+          if (this.isGrounded) {
+            this.coyoteTimer = 0.12;
+          } else if (this.coyoteTimer > 0) {
+            this.coyoteTimer -= dt;
+          }
+
+          // Jump input buffer decay
+          if (this.jumpBufferTimer > 0) {
+            this.jumpBufferTimer -= dt;
+          }
+
+          // Vertical physics
+          const activeGravity = (this.isDucking && this.vy > 0) ? this.duckFastFall : this.gravity;
+          this.vy += activeGravity * dt;
+          this.y += this.vy * dt;
+
+          // Ground landing collision
+          if (this.y >= GROUND_Y) {
+            this.y = GROUND_Y;
+            this.vy = 0;
+            const wasInAir = !this.isGrounded;
+            this.isGrounded = true;
+            this.jumpCount = 0;
+            this.isDoubleJumping = false;
+            this.flipAngle = 0;
+
+            if (wasInAir) {
+              // Impact landing squash
+              this.squashX = 1.28;
+              this.squashY = 0.72;
+
+              // If player pressed Jump right before touching down, jump INSTANTLY on landing!
+              if (this.jumpBufferTimer > 0) {
+                this.jumpBufferTimer = 0;
+                this._executeFirstJump(soundEngine);
+              }
+            }
+          } else {
+            this.isGrounded = false;
+          }
+
+          // Running cycle & Squash spring relaxation
+          if (this.isGrounded && !this.isBonking) {
+            this.runCycle += dt * (speedFactor * 0.024);
+            // Crisp natural bobbing
+            const bob = Math.sin(this.runCycle * 2) * 0.04;
+            this.squashX += (1.0 - bob - this.squashX) * (24 * dt);
+            this.squashY += (1.0 + bob - this.squashY) * (24 * dt);
+          } else {
+            // Air relaxation
+            this.squashX += (1.0 - this.squashX) * (16 * dt);
+            this.squashY += (1.0 - this.squashY) * (16 * dt);
+          }
+
+          // Duck pancake squash override
+          if (this.isDucking && this.isGrounded && !this.isBonking) {
+            this.squashX = 1.45;
+            this.squashY = 0.52;
+          }
+
+          // Googly eyes inertia wobble
+          const targetLookX = this.isBonking ? Math.sin(this.bonkSpinAngle * 3) * 5 : 3.5;
+          const targetLookY = this.isBonking ? Math.cos(this.bonkSpinAngle * 3) * 5 : (this.vy * 0.006);
+
+          this.leftPupilOffset.x += (targetLookX - this.leftPupilOffset.x) * 12 * dt;
+          this.leftPupilOffset.y += (targetLookY - this.leftPupilOffset.y) * 12 * dt;
+          this.rightPupilOffset.x += (targetLookX - this.rightPupilOffset.x) * 12 * dt;
+          this.rightPupilOffset.y += (targetLookY - this.rightPupilOffset.y) * 12 * dt;
+        }
+
+        getVisualWidth() {
+          return this.baseRadius * 2 * this.scale * this.squashX;
+        }
+
+        getVisualHeight() {
+          return this.baseRadius * 1.9 * this.scale * this.squashY;
+        }
+
+        /**
+         * Fair collision bounds for obstacles.
+         * Ducking pancakes the hitbox low so ducking cleanly dodges flying obstacles even as Gloop grows!
+         */
+        getHitbox() {
+          const w = this.getVisualWidth() * 0.72; // Fair inner padding
+          const h = this.isDucking ? Math.min(26, this.getVisualHeight() * 0.52) : this.getVisualHeight() * 0.76;
+          return {
+            x: this.x - w / 2,
+            y: this.y - h,
+            width: w,
+            height: h
+          };
+        }
+
+        draw(ctx, isSuperAura = false) {
+          ctx.save();
+          ctx.translate(this.x, this.y);
+
+          // Blinking when invulnerable
+          if (this.invulnerableTimer > 0) {
+            const blink = Math.floor(this.invulnerableTimer * 14) % 2 === 0;
+            ctx.globalAlpha = blink ? 0.35 : 0.85;
+          }
+
+          // Super Golden Aura if beating previous high score
+          if (isSuperAura) {
+            ctx.save();
+            const pulse = Math.sin(performance.now() * 0.008) * 5;
+            ctx.strokeStyle = '#ffd700';
+            ctx.lineWidth = 3;
+            ctx.shadowColor = '#ffd700';
+            ctx.shadowBlur = 18;
+            ctx.beginPath();
+            ctx.ellipse(0, -25, 32 + pulse, 36 + pulse, 0, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.restore();
+          }
+
+          // Dizzy spin rotation during bonk, or athletic somersault on double jump
+          if (this.isBonking) {
+            ctx.rotate(this.bonkSpinAngle);
+          } else if (this.isDoubleJumping) {
+            ctx.rotate(this.flipAngle);
+          }
+
+          const s = this.scale;
+          const sx = this.squashX * s;
+          const sy = this.squashY * s;
+
+          // 1. Soft ground shadow
+          ctx.save();
+          ctx.scale(sx, 1);
+          ctx.beginPath();
+          ctx.ellipse(0, 4, 30, 8, 0, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.22)';
+          ctx.fill();
+          ctx.restore();
+
+          // Apply squash & stretch transform
+          ctx.scale(sx, sy);
+
+          // 2. Stubby Little Feet
+          const footOffset = Math.sin(this.runCycle) * 10;
+          ctx.fillStyle = '#e02468';
+          if (this.isGrounded && !this.isDucking) {
+            // Left foot
+            ctx.beginPath();
+            ctx.ellipse(-12 + footOffset * 0.6, 2, 7, 5, 0, 0, Math.PI * 2);
+            ctx.fill();
+            // Right foot
+            ctx.beginPath();
+            ctx.ellipse(12 - footOffset * 0.6, 2, 7, 5, 0, 0, Math.PI * 2);
+            ctx.fill();
+          } else {
+            // Tucked or splayed feet
+            ctx.beginPath();
+            ctx.ellipse(-14, 0, 7, 4, -0.2, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.ellipse(14, 0, 7, 4, 0.2, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          // 3. Blob Body (Smooth jelly pear shape with cubic bezier curves)
+          const grad = ctx.createRadialGradient(-6, -26, 4, 0, -18, 38);
+          grad.addColorStop(0, '#ff80ab');
+          grad.addColorStop(0.55, '#ff4081');
+          grad.addColorStop(1, '#c2185b');
+
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.moveTo(-24, 0);
+          ctx.bezierCurveTo(-34, -14, -30, -38, -14, -46);
+          ctx.bezierCurveTo(-4, -52, 14, -52, 22, -42);
+          ctx.bezierCurveTo(34, -30, 34, -10, 24, 0);
+          ctx.closePath();
+          ctx.fill();
+
+          // Body highlight reflection (glossy jelly look)
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.42)';
+          ctx.beginPath();
+          ctx.ellipse(-11, -38, 9, 4, -0.45, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Rosy Blush Cheeks (Sweet cartoon expression!)
+          ctx.fillStyle = 'rgba(255, 64, 129, 0.45)';
+          ctx.beginPath();
+          ctx.ellipse(-14, -15, 5, 3.2, 0, 0, Math.PI * 2);
+          ctx.ellipse(14, -15, 5, 3.2, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // 4. Tongue sticking out playfully
+          ctx.save();
+          const tongueWobble = Math.sin(this.runCycle * 2) * 2;
+          ctx.fillStyle = '#ff1744';
+          ctx.beginPath();
+          ctx.moveTo(14, -12);
+          ctx.quadraticCurveTo(28 + tongueWobble, -8, 24 + tongueWobble, -2);
+          ctx.quadraticCurveTo(16, 2, 12, -8);
+          ctx.closePath();
+          ctx.fill();
+          // Tongue crease line
+          ctx.strokeStyle = '#b71c1c';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(15, -10);
+          ctx.lineTo(22 + tongueWobble * 0.7, -4);
+          ctx.stroke();
+          ctx.restore();
+
+          // 5. Goofy Mismatched Googly Eyes
+          this._drawGooglyEye(ctx, -10, -28, 9.5, this.leftPupilOffset, 4.2);
+          this._drawGooglyEye(ctx, 11, -26, 7.8, this.rightPupilOffset, 3.4);
+
+          // 6. Stacked Hats on top of Gloop!
+          this._drawHatsStack(ctx);
+
+          // 7. Cartoon Dizzy Orbiting Stars when bonked
+          if (this.isBonking) {
+            this._drawDizzyHalo(ctx);
+          }
+
+          ctx.restore();
+        }
+
+        _drawGooglyEye(ctx, cx, cy, eyeRadius, pupilOffset, pupilRadius) {
+          ctx.save();
+          // Squint when ducking
+          const ry = this.isDucking ? eyeRadius * 0.45 : eyeRadius;
+
+          // White sclera
+          ctx.fillStyle = '#ffffff';
+          ctx.strokeStyle = '#4a1525';
+          ctx.lineWidth = 1.8;
+          ctx.beginPath();
+          ctx.ellipse(cx, cy, eyeRadius, ry, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+
+          // Pupil with wobble & clamping
+          const maxDistX = eyeRadius - pupilRadius - 1;
+          const maxDistY = Math.max(1, ry - (pupilRadius * (this.isDucking ? 0.5 : 1)) - 0.5);
+          const px = Math.max(-maxDistX, Math.min(maxDistX, pupilOffset.x));
+          const py = Math.max(-maxDistY, Math.min(maxDistY, pupilOffset.y));
+
+          ctx.fillStyle = '#111111';
+          ctx.beginPath();
+          ctx.ellipse(cx + px, cy + py, pupilRadius, this.isDucking ? pupilRadius * 0.5 : pupilRadius, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Eye glint
+          if (!this.isDucking) {
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(cx + px - pupilRadius * 0.35, cy + py - pupilRadius * 0.35, pupilRadius * 0.35, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          ctx.restore();
+        }
+
+        _drawHatsStack(ctx) {
+          if (this.hatsCount <= 0) return;
+
+          ctx.save();
+          // Hat stack base starts right on top of Gloop's head
+          let currentY = -48;
+          const hatsUnlocked = Math.min(5, this.hatsCount);
+
+          for (let i = 0; i < hatsUnlocked; i++) {
+            // Elastic wobble per hat tier
+            const wobble = Math.sin(this.runCycle + i * 0.7) * 0.08 + (this.vy * 0.0004);
+            ctx.save();
+            ctx.translate(0, currentY);
+            ctx.rotate(wobble);
+
+            switch (i) {
+              case 0: // 1. Party Hat
+                this._drawPartyHat(ctx);
+                currentY -= 28;
+                break;
+              case 1: // 2. Propeller Beanie
+                this._drawPropellerBeanie(ctx);
+                currentY -= 20;
+                break;
+              case 2: // 3. Royal Crown
+                this._drawRoyalCrown(ctx);
+                currentY -= 22;
+                break;
+              case 3: // 4. Top Hat
+                this._drawTopHat(ctx);
+                currentY -= 30;
+                break;
+              case 4: // 5. Traffic Cone
+                this._drawTrafficCone(ctx);
+                currentY -= 34;
+                break;
+            }
+            ctx.restore();
+          }
+          ctx.restore();
+        }
+
+        _drawPartyHat(ctx) {
+          // Colorful cone
+          ctx.fillStyle = '#00e5ff';
+          ctx.beginPath();
+          ctx.moveTo(-12, 0);
+          ctx.lineTo(0, -28);
+          ctx.lineTo(12, 0);
+          ctx.closePath();
+          ctx.fill();
+
+          // Stripes
+          ctx.strokeStyle = '#ffeb3b';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(-6, -12);
+          ctx.lineTo(6, -12);
+          ctx.stroke();
+
+          // Fluffy Pom-pom
+          ctx.fillStyle = '#ff4081';
+          ctx.beginPath();
+          ctx.arc(0, -28, 5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        _drawPropellerBeanie(ctx) {
+          // Beanie Dome
+          ctx.fillStyle = '#2979ff';
+          ctx.beginPath();
+          ctx.arc(0, 0, 14, Math.PI, 0);
+          ctx.fill();
+          // Red panel
+          ctx.fillStyle = '#ff1744';
+          ctx.beginPath();
+          ctx.arc(0, 0, 8, Math.PI, 0);
+          ctx.fill();
+
+          // Spindle
+          ctx.strokeStyle = '#ffd600';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(0, -14);
+          ctx.lineTo(0, -22);
+          ctx.stroke();
+
+          // Spinning propeller blades
+          const propAngle = performance.now() * 0.018;
+          const bladeSpan = Math.cos(propAngle) * 16;
+          ctx.strokeStyle = '#00e676';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(-bladeSpan, -22);
+          ctx.lineTo(bladeSpan, -22);
+          ctx.stroke();
+
+          ctx.fillStyle = '#ff3d00';
+          ctx.beginPath();
+          ctx.arc(0, -22, 2.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        _drawRoyalCrown(ctx) {
+          ctx.fillStyle = '#ffd700';
+          ctx.strokeStyle = '#b8860b';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(-16, 0);
+          ctx.lineTo(-14, -18);
+          ctx.lineTo(-7, -8);
+          ctx.lineTo(0, -22);
+          ctx.lineTo(7, -8);
+          ctx.lineTo(14, -18);
+          ctx.lineTo(16, 0);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+
+          // Jewels
+          const jewelColors = ['#ff1744', '#00e5ff', '#ff1744'];
+          [-9, 0, 9].forEach((jx, idx) => {
+            ctx.fillStyle = jewelColors[idx];
+            ctx.beginPath();
+            ctx.arc(jx, -10, 2.2, 0, Math.PI * 2);
+            ctx.fill();
+          });
+        }
+
+        _drawTopHat(ctx) {
+          // Brim
+          ctx.fillStyle = '#212121';
+          ctx.beginPath();
+          ctx.ellipse(0, 0, 18, 4, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Cylinder
+          ctx.fillStyle = '#263238';
+          ctx.fillRect(-11, -26, 22, 26);
+
+          // Silk Ribbon
+          ctx.fillStyle = '#d50000';
+          ctx.fillRect(-11, -8, 22, 6);
+        }
+
+        _drawTrafficCone(ctx) {
+          // Base plate
+          ctx.fillStyle = '#ff6d00';
+          ctx.fillRect(-16, -3, 32, 4);
+
+          // Orange cone
+          ctx.beginPath();
+          ctx.moveTo(-12, -3);
+          ctx.lineTo(0, -32);
+          ctx.lineTo(12, -3);
+          ctx.closePath();
+          ctx.fill();
+
+          // Reflective white safety collar
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 4;
+          ctx.beginPath();
+          ctx.moveTo(-6, -16);
+          ctx.lineTo(6, -16);
+          ctx.stroke();
+        }
+
+        _drawDizzyHalo(ctx) {
+          ctx.save();
+          const haloT = performance.now() * 0.008;
+          ctx.strokeStyle = '#ffeb3b';
+          ctx.lineWidth = 2.5;
+
+          for (let i = 0; i < 3; i++) {
+            const starAngle = haloT + (i * Math.PI * 2) / 3;
+            const sx = Math.cos(starAngle) * 32;
+            const sy = -60 + Math.sin(starAngle) * 10;
+
+            ctx.fillStyle = '#fff9c4';
+            ctx.beginPath();
+            ctx.arc(sx, sy, 4, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          ctx.restore();
+        }
+      }
+
+      // =========================================================================
+      // 6. OBSTACLE GENERATOR & MANAGER
+      // =========================================================================
+      class ObstacleManager {
+        constructor() {
+          this.obstacles = [];
+          this.spawnTimer = 0;
+          this.minInterval = 1.4;
+          this.maxInterval = 2.6;
+        }
+
+        reset() {
+          this.obstacles = [];
+          this.spawnTimer = 1.5;
+        }
+
+        update(dt, currentSpeed, seasonIndex, particleSystem) {
+          this.spawnTimer -= dt;
+          if (this.spawnTimer <= 0) {
+            this.spawnObstacle(seasonIndex);
+            // Intervals tighten slightly as speed increases
+            const speedRatio = Math.max(0, Math.min(1.0, (currentSpeed - INITIAL_SPEED) / (MAX_SPEED - INITIAL_SPEED)));
+            this.spawnTimer = (this.minInterval + Math.random() * (this.maxInterval - this.minInterval)) * (1 - speedRatio * 0.35);
+          }
+
+          // Move and update obstacles
+          for (let i = this.obstacles.length - 1; i >= 0; i--) {
+            const obs = this.obstacles[i];
+
+            if (obs.knocked) {
+              // Tumbling away when hit during bonk
+              obs.x += obs.vx * dt;
+              obs.y += obs.vy * dt;
+              obs.vy += 650 * dt;
+              obs.rot += 12 * dt;
+              obs.alpha -= dt * 1.5;
+              if (obs.alpha <= 0 || obs.y > VIRTUAL_HEIGHT + 100) {
+                this.obstacles.splice(i, 1);
+              }
+            } else {
+              obs.x -= currentSpeed * dt;
+              obs.animTime = (obs.animTime || 0) + dt;
+
+              // Despawn when off screen left
+              if (obs.x < -120) {
+                this.obstacles.splice(i, 1);
+              }
+            }
+          }
+        }
+
+        spawnObstacle(seasonIndex) {
+          // Season-specific obstacle templates
+          let pool = [];
+
+          switch (seasonIndex) {
+            case 0: // Spring: Mushroom, Bumblebee (flying), Rose Bush
+              pool = [
+                { type: 'mushroom', isFlying: false, w: 38, h: 46 },
+                { type: 'bumblebee', isFlying: true, w: 42, h: 32 },
+                { type: 'rosebush', isFlying: false, w: 44, h: 42 }
+              ];
+              break;
+            case 1: // Summer: Cactus, Tumbleweed, Flying Gull
+              pool = [
+                { type: 'cactus', isFlying: false, w: 36, h: 62 },
+                { type: 'tumbleweed', isFlying: false, w: 38, h: 38 },
+                { type: 'seagull', isFlying: true, w: 46, h: 28 }
+              ];
+              break;
+            case 2: // Autumn: Pumpkin, Scarecrow, Flying Raven
+              pool = [
+                { type: 'pumpkin', isFlying: false, w: 42, h: 40 },
+                { type: 'scarecrow', isFlying: false, w: 42, h: 68 },
+                { type: 'raven', isFlying: true, w: 44, h: 30 }
+              ];
+              break;
+            case 3: // Winter: Snowman, Ice Spikes, Rolling Snowball
+              pool = [
+                { type: 'snowman', isFlying: false, w: 44, h: 58 },
+                { type: 'icespikes', isFlying: false, w: 38, h: 48 },
+                { type: 'snowball', isFlying: false, w: 36, h: 36 }
+              ];
+              break;
+          }
+
+          const template = pool[Math.floor(Math.random() * pool.length)];
+          // Flying obstacles positioned at duckable height (duck under or jump high over!)
+          const yPos = template.isFlying
+            ? (GROUND_Y - 46 - Math.random() * 8)
+            : GROUND_Y;
+
+          this.obstacles.push({
+            type: template.type,
+            isFlying: template.isFlying,
+            x: VIRTUAL_WIDTH + 60,
+            y: yPos,
+            width: template.w,
+            height: template.h,
+            animTime: 0,
+            knocked: false,
+            vx: 0,
+            vy: 0,
+            rot: 0,
+            alpha: 1.0
+          });
+        }
+
+        checkCollision(gloopHitbox, gloop, soundEngine, particleSystem, onLifeLost, onGameOver) {
+          for (let obs of this.obstacles) {
+            if (obs.knocked) continue;
+
+            const obsBox = {
+              x: obs.x - obs.width / 2,
+              y: obs.isFlying ? obs.y - obs.height / 2 : obs.y - obs.height,
+              width: obs.width,
+              height: obs.height
+            };
+
+            // AABB Collision test
+            const overlap = (
+              gloopHitbox.x < obsBox.x + obsBox.width &&
+              gloopHitbox.x + gloopHitbox.width > obsBox.x &&
+              gloopHitbox.y < obsBox.y + obsBox.height &&
+              gloopHitbox.y + gloopHitbox.height > obsBox.y
+            );
+
+            if (overlap) {
+              if (gloop.invulnerableTimer <= 0) {
+                // Play UNIQUE obstacle sound effect!
+                soundEngine.playObstacleHit(obs.type, gloop.scale);
+
+                // Knock obstacle away
+                obs.knocked = true;
+                obs.vx = 220 + Math.random() * 120;
+                obs.vy = -340;
+
+                gloop.lives--;
+                gloop.triggerBonk(soundEngine, particleSystem);
+
+                if (onLifeLost) onLifeLost(gloop.lives);
+
+                if (gloop.lives <= 0) {
+                  if (onGameOver) onGameOver();
+                }
+              }
+              break;
+            }
+          }
+        }
+
+        draw(ctx) {
+          for (let obs of this.obstacles) {
+            ctx.save();
+            ctx.translate(obs.x, obs.y);
+            if (obs.knocked) {
+              ctx.rotate(obs.rot);
+              ctx.globalAlpha = obs.alpha;
+            }
+
+            switch (obs.type) {
+              // Spring
+              case 'mushroom': this._drawMushroom(ctx); break;
+              case 'bumblebee': this._drawBumblebee(ctx, obs.animTime); break;
+              case 'rosebush': this._drawRoseBush(ctx); break;
+              // Summer
+              case 'cactus': this._drawCactus(ctx); break;
+              case 'tumbleweed': this._drawTumbleweed(ctx, obs.animTime); break;
+              case 'seagull': this._drawSeagull(ctx, obs.animTime); break;
+              // Autumn
+              case 'pumpkin': this._drawPumpkin(ctx); break;
+              case 'scarecrow': this._drawScarecrow(ctx); break;
+              case 'raven': this._drawRaven(ctx, obs.animTime); break;
+              // Winter
+              case 'snowman': this._drawSnowman(ctx); break;
+              case 'icespikes': this._drawIceSpikes(ctx); break;
+              case 'snowball': this._drawSnowball(ctx, obs.animTime); break;
+            }
+            ctx.restore();
+          }
+        }
+
+        // --- THEMED OBSTACLE RENDERERS ---
+        _drawMushroom(ctx) {
+          // Cream stalk
+          ctx.fillStyle = '#f5f5dc';
+          ctx.fillRect(-7, -24, 14, 24);
+          // Red cap with dots
+          ctx.fillStyle = '#e53935';
+          ctx.beginPath();
+          ctx.arc(0, -24, 20, Math.PI, 0);
+          ctx.closePath();
+          ctx.fill();
+
+          ctx.fillStyle = '#ffffff';
+          [[-8, -32], [6, -34], [0, -26], [-12, -26], [10, -28]].forEach(([dx, dy]) => {
+            ctx.beginPath();
+            ctx.arc(dx, dy, 3.2, 0, Math.PI * 2);
+            ctx.fill();
+          });
+        }
+
+        _drawBumblebee(ctx, t) {
+          // Flapping wings
+          const wingFlap = Math.sin(t * 35) * 12;
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+          ctx.beginPath();
+          ctx.ellipse(-4, -14, 7, Math.abs(wingFlap) + 3, -0.2, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Striped body
+          ctx.fillStyle = '#ffd600';
+          ctx.beginPath();
+          ctx.ellipse(0, 0, 16, 12, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = '#212121';
+          [-6, 2].forEach(bx => {
+            ctx.fillRect(bx, -10, 4, 20);
+          });
+
+          // Eye & stinger
+          ctx.beginPath();
+          ctx.moveTo(-16, 0);
+          ctx.lineTo(-20, 2);
+          ctx.lineTo(-16, 4);
+          ctx.fill();
+
+          ctx.fillStyle = '#fff';
+          ctx.beginPath();
+          ctx.arc(10, -3, 3.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#000';
+          ctx.beginPath();
+          ctx.arc(11, -3, 1.8, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        _drawRoseBush(ctx) {
+          ctx.fillStyle = '#2e7d32';
+          ctx.beginPath();
+          ctx.arc(-10, -18, 14, 0, Math.PI * 2);
+          ctx.arc(10, -18, 14, 0, Math.PI * 2);
+          ctx.arc(0, -28, 16, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Red roses
+          ctx.fillStyle = '#d81b60';
+          [[-8, -24], [8, -26], [0, -14]].forEach(([rx, ry]) => {
+            ctx.beginPath();
+            ctx.arc(rx, ry, 4.5, 0, Math.PI * 2);
+            ctx.fill();
+          });
+        }
+
+        _drawCactus(ctx) {
+          ctx.fillStyle = '#388e3c';
+          // Main stem
+          ctx.beginPath();
+          ctx.roundRect(-8, -58, 16, 58, 8);
+          ctx.fill();
+
+          // Left arm
+          ctx.beginPath();
+          ctx.roundRect(-20, -42, 14, 8, 4);
+          ctx.roundRect(-20, -50, 7, 16, 4);
+          ctx.fill();
+
+          // Right arm
+          ctx.beginPath();
+          ctx.roundRect(6, -34, 14, 8, 4);
+          ctx.roundRect(13, -42, 7, 16, 4);
+          ctx.fill();
+
+          // Flower
+          ctx.fillStyle = '#ff4081';
+          ctx.beginPath();
+          ctx.arc(0, -60, 4, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        _drawTumbleweed(ctx, t) {
+          ctx.save();
+          ctx.rotate(t * 8);
+          ctx.strokeStyle = '#8d6e63';
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.arc(0, -18, 16, 0, Math.PI * 2);
+          ctx.stroke();
+
+          for (let i = 0; i < 4; i++) {
+            ctx.beginPath();
+            ctx.moveTo(-12, -18);
+            ctx.lineTo(12, -18);
+            ctx.stroke();
+            ctx.rotate(Math.PI / 4);
+          }
+          ctx.restore();
+        }
+
+        _drawSeagull(ctx, t) {
+          const wingY = Math.sin(t * 12) * 8;
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 3.5;
+          ctx.beginPath();
+          ctx.moveTo(-18, wingY);
+          ctx.lineTo(-4, 0);
+          ctx.lineTo(0, -2);
+          ctx.lineTo(4, 0);
+          ctx.lineTo(18, wingY);
+          ctx.stroke();
+
+          // Beak
+          ctx.fillStyle = '#ff9800';
+          ctx.beginPath();
+          ctx.moveTo(3, -1);
+          ctx.lineTo(8, -2);
+          ctx.lineTo(3, 1);
+          ctx.fill();
+        }
+
+        _drawPumpkin(ctx) {
+          // Orange segments
+          ctx.fillStyle = '#ff6f00';
+          ctx.beginPath();
+          ctx.ellipse(0, -18, 20, 18, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Ribs
+          ctx.strokeStyle = '#e65100';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.ellipse(0, -18, 12, 17, 0, 0, Math.PI * 2);
+          ctx.stroke();
+
+          // Green stem
+          ctx.fillStyle = '#4caf50';
+          ctx.fillRect(-3, -38, 6, 8);
+
+          // Glowing Jack-O-Lantern face
+          ctx.fillStyle = '#ffe082';
+          // Left eye
+          ctx.beginPath();
+          ctx.moveTo(-9, -22); ctx.lineTo(-4, -22); ctx.lineTo(-6, -26); ctx.fill();
+          // Right eye
+          ctx.beginPath();
+          ctx.moveTo(4, -22); ctx.lineTo(9, -22); ctx.lineTo(6, -26); ctx.fill();
+          // Tooth smile
+          ctx.beginPath();
+          ctx.arc(0, -15, 9, 0.2, Math.PI - 0.2);
+          ctx.lineTo(0, -13);
+          ctx.fill();
+        }
+
+        _drawScarecrow(ctx) {
+          // Post
+          ctx.fillStyle = '#5d4037';
+          ctx.fillRect(-3, -64, 6, 64);
+          // Straw shirt
+          ctx.fillStyle = '#1e88e5';
+          ctx.fillRect(-16, -46, 32, 22);
+          // Burlap head
+          ctx.fillStyle = '#ffe082';
+          ctx.beginPath();
+          ctx.arc(0, -54, 8, 0, Math.PI * 2);
+          ctx.fill();
+          // Hat
+          ctx.fillStyle = '#8d6e63';
+          ctx.fillRect(-12, -64, 24, 4);
+          ctx.fillRect(-7, -72, 14, 8);
+        }
+
+        _drawRaven(ctx, t) {
+          const wingAngle = Math.sin(t * 14) * 0.4;
+          ctx.fillStyle = '#212121';
+          // Body
+          ctx.beginPath();
+          ctx.ellipse(0, 0, 16, 9, 0, 0, Math.PI * 2);
+          ctx.fill();
+          // Wings
+          ctx.save();
+          ctx.rotate(wingAngle);
+          ctx.beginPath();
+          ctx.ellipse(-2, -10, 12, 6, -0.3, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+          // Beak
+          ctx.fillStyle = '#757575';
+          ctx.beginPath();
+          ctx.moveTo(14, -2);
+          ctx.lineTo(22, 0);
+          ctx.lineTo(14, 3);
+          ctx.fill();
+        }
+
+        _drawSnowman(ctx) {
+          ctx.fillStyle = '#ffffff';
+          ctx.strokeStyle = '#b0bec5';
+          ctx.lineWidth = 1.5;
+          // Bottom ball
+          ctx.beginPath();
+          ctx.arc(0, -18, 18, 0, Math.PI * 2);
+          ctx.fill(); ctx.stroke();
+          // Top ball
+          ctx.beginPath();
+          ctx.arc(0, -42, 12, 0, Math.PI * 2);
+          ctx.fill(); ctx.stroke();
+
+          // Carrot nose
+          ctx.fillStyle = '#ff5722';
+          ctx.beginPath();
+          ctx.moveTo(3, -42);
+          ctx.lineTo(14, -40);
+          ctx.lineTo(3, -38);
+          ctx.fill();
+
+          // Coal eyes
+          ctx.fillStyle = '#212121';
+          ctx.beginPath();
+          ctx.arc(-3, -44, 2, 0, Math.PI * 2);
+          ctx.arc(4, -44, 2, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Red cozy scarf
+          ctx.fillStyle = '#d32f2f';
+          ctx.fillRect(-10, -32, 20, 6);
+        }
+
+        _drawIceSpikes(ctx) {
+          ctx.fillStyle = '#80deea';
+          ctx.strokeStyle = '#e0f7fa';
+          ctx.lineWidth = 1.5;
+
+          const spikes = [
+            [-14, 0, -10, -36, -6, 0],
+            [-6, 0, 0, -46, 6, 0],
+            [6, 0, 12, -32, 16, 0]
+          ];
+          spikes.forEach(([x1, y1, x2, y2, x3, y3]) => {
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.lineTo(x3, y3);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+          });
+        }
+
+        _drawSnowball(ctx, t) {
+          ctx.save();
+          ctx.rotate(t * 6);
+          ctx.fillStyle = '#f5f5f5';
+          ctx.strokeStyle = '#cfd8dc';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(0, -16, 16, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+          ctx.restore();
+        }
+      }
+
+      // =========================================================================
+      // 7. FLOATING DONUTS & REWARD SYSTEM
+      // =========================================================================
+      class DonutManager {
+        constructor() {
+          this.donuts = [];
+          this.spawnTimer = 2.0;
+          this.totalCollected = 0;
+        }
+
+        reset() {
+          this.donuts = [];
+          this.spawnTimer = 2.0;
+        }
+
+        update(dt, currentSpeed) {
+          this.spawnTimer -= dt;
+          if (this.spawnTimer <= 0) {
+            this.spawnDonutCluster();
+            this.spawnTimer = 2.8 + Math.random() * 3.5;
+          }
+
+          // Move donuts
+          for (let i = this.donuts.length - 1; i >= 0; i--) {
+            const d = this.donuts[i];
+            d.x -= currentSpeed * dt;
+            d.animTime += dt;
+
+            // Remove offscreen
+            if (d.x < -60) {
+              this.donuts.splice(i, 1);
+            }
+          }
+        }
+
+        spawnDonutCluster() {
+          // Spawn donuts at varied heights: Low, Mid-air, or High jump peak
+          const heights = [
+            GROUND_Y - 45,  // Low (run/hop)
+            GROUND_Y - 110, // Mid-air jump
+            GROUND_Y - 170  // High peak jump!
+          ];
+          const yBase = heights[Math.floor(Math.random() * heights.length)];
+          const count = 1 + Math.floor(Math.random() * 3); // 1 to 3 donuts in an arc
+
+          for (let i = 0; i < count; i++) {
+            this.donuts.push({
+              x: VIRTUAL_WIDTH + 80 + i * 44,
+              baseY: yBase - Math.sin((i / count) * Math.PI) * 25,
+              radius: 14,
+              animTime: i * 0.4,
+              frostingColor: ['#ff4081', '#795548', '#00e5ff'][Math.floor(Math.random() * 3)]
+            });
+          }
+        }
+
+        checkCollection(gloopHitbox, gloop, soundEngine, particleSystem, onCollected, onHatUnlocked) {
+          for (let i = this.donuts.length - 1; i >= 0; i--) {
+            const d = this.donuts[i];
+            const currentY = d.baseY + Math.sin(d.animTime * 3.5) * 6;
+
+            // Simple Circle-Box overlap test
+            const closestX = Math.max(gloopHitbox.x, Math.min(d.x, gloopHitbox.x + gloopHitbox.width));
+            const closestY = Math.max(gloopHitbox.y, Math.min(currentY, gloopHitbox.y + gloopHitbox.height));
+            const distX = d.x - closestX;
+            const distY = currentY - closestY;
+
+            if ((distX * distX + distY * distY) < (d.radius * d.radius)) {
+              // Collected!
+              this.totalCollected++;
+              soundEngine.playDonutCollect();
+              particleSystem.spawnDonutSparkles(d.x, currentY);
+              particleSystem.addFloatingText('+DONUT! +100', d.x, currentY - 15, '#e040fb', 22);
+
+              if (onCollected) onCollected(100);
+
+              // Check for hat unlock (Every 4 donuts!)
+              if (this.totalCollected % 4 === 0) {
+                const nextHat = Math.min(5, Math.floor(this.totalCollected / 4));
+                gloop.hatsCount = nextHat;
+                soundEngine.playHatFanfare();
+                particleSystem.addFloatingText('🎩 NEW HAT UNLOCKED!', gloop.x, gloop.y - gloop.getVisualHeight() - 40, '#ffd700', 24);
+                if (onHatUnlocked) onHatUnlocked(nextHat);
+              }
+
+              this.donuts.splice(i, 1);
+            }
+          }
+        }
+
+        draw(ctx) {
+          for (let d of this.donuts) {
+            const currentY = d.baseY + Math.sin(d.animTime * 3.5) * 6;
+            ctx.save();
+            ctx.translate(d.x, currentY);
+
+            // Glow aura
+            ctx.fillStyle = 'rgba(255, 235, 59, 0.25)';
+            ctx.beginPath();
+            ctx.arc(0, 0, d.radius + 6, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Dough ring
+            ctx.fillStyle = '#ffcc80';
+            ctx.strokeStyle = '#e69a48';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.arc(0, 0, d.radius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            // Frosting
+            ctx.fillStyle = d.frostingColor;
+            ctx.beginPath();
+            ctx.arc(0, 0, d.radius * 0.78, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Donut hole
+            ctx.fillStyle = '#1a1c2c';
+            ctx.beginPath();
+            ctx.arc(0, 0, d.radius * 0.32, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Tiny sprinkles
+            const sprinkles = [
+              [-5, -4, '#fff'], [4, -5, '#ffeb3b'], [6, 2, '#00e676'],
+              [-4, 5, '#e040fb'], [0, -7, '#ff1744']
+            ];
+            sprinkles.forEach(([sx, sy, sc]) => {
+              ctx.fillStyle = sc;
+              ctx.fillRect(sx, sy, 2.5, 1.5);
+            });
+
+            ctx.restore();
+          }
+        }
+      }
+
+      // =========================================================================
+      // 8. PARALLAX BACKGROUND & SEASONS ENGINE
+      // =========================================================================
+      class BackgroundManager {
+        constructor() {
+          this.farScroll = 0;
+          this.midScroll = 0;
+          this.nearScroll = 0;
+          this.groundScroll = 0;
+
+          // Lightning storm state for Summer
+          this.lightningFlash = 0;
+          this.nextLightningTime = 4.0;
+        }
+
+        update(dt, currentSpeed, isSummerMonsoon) {
+          this.farScroll = (this.farScroll + currentSpeed * 0.1 * dt) % VIRTUAL_WIDTH;
+          this.midScroll = (this.midScroll + currentSpeed * 0.28 * dt) % VIRTUAL_WIDTH;
+          this.nearScroll = (this.nearScroll + currentSpeed * 0.55 * dt) % VIRTUAL_WIDTH;
+          this.groundScroll = (this.groundScroll + currentSpeed * dt) % 60;
+
+          // Summer Monsoon Lightning flash
+          if (isSummerMonsoon) {
+            this.nextLightningTime -= dt;
+            if (this.nextLightningTime <= 0) {
+              this.lightningFlash = 0.85; // Screen flash!
+              this.nextLightningTime = 3.0 + Math.random() * 5.0;
+            }
+          }
+          if (this.lightningFlash > 0) {
+            this.lightningFlash = Math.max(0, this.lightningFlash - dt * 4.5);
+          }
+        }
+
+        draw(ctx, seasonIndex, nextSeasonIndex, transitionFactor, isSummerMonsoon) {
+          const cur = SEASONS_DATA[seasonIndex];
+          const next = SEASONS_DATA[nextSeasonIndex];
+          const f = transitionFactor;
+
+          // 1. Dynamic Interpolated Sky Gradient
+          let curSkyTop = cur.skyTop;
+          let curSkyBottom = cur.skyBottom;
+          if (seasonIndex === 1 && isSummerMonsoon) {
+            curSkyTop = cur.skyStormTop;
+            curSkyBottom = cur.skyStormBottom;
+          }
+
+          const skyGrad = ctx.createLinearGradient(0, 0, 0, GROUND_Y);
+          skyGrad.addColorStop(0, lerpColor(curSkyTop, next.skyTop, f));
+          skyGrad.addColorStop(1, lerpColor(curSkyBottom, next.skyBottom, f));
+          ctx.fillStyle = skyGrad;
+          ctx.fillRect(0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
+
+          // 2. Celestial Body (Sun / Frost Sun / Moon)
+          if (!isSummerMonsoon || seasonIndex !== 1) {
+            ctx.save();
+            const sunColor = lerpColor(cur.sunColor, next.sunColor, f);
+            ctx.fillStyle = sunColor;
+            ctx.shadowColor = sunColor;
+            ctx.shadowBlur = 24;
+            ctx.beginPath();
+            ctx.arc(VIRTUAL_WIDTH * 0.78, 90, cur.sunSize, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          }
+
+          // 3. Parallax Hills Layer 1: Distant Mountains / High Hills
+          const farColor = lerpColor(cur.farHills, next.farHills, f);
+          this._drawHills(ctx, this.farScroll, farColor, 230, 75, 420);
+
+          // 4. Parallax Hills Layer 2: Midground Rolling Hills & Seasonal Trees
+          const midColor = lerpColor(cur.midHills, next.midHills, f);
+          this._drawHills(ctx, this.midScroll, midColor, 170, 95, 320);
+          this._drawTrees(ctx, this.midScroll, seasonIndex, 330);
+
+          // 5. Parallax Hills Layer 3: Near Hills
+          const nearColor = lerpColor(cur.nearHills, next.nearHills, f);
+          this._drawHills(ctx, this.nearScroll, nearColor, 110, 115, 240);
+
+          // 6. Ground Base
+          const groundTopColor = lerpColor(cur.groundTop, next.groundTop, f);
+          const groundSubColor = lerpColor(cur.groundSub, next.groundSub, f);
+
+          ctx.fillStyle = groundTopColor;
+          ctx.fillRect(0, GROUND_Y, VIRTUAL_WIDTH, 14);
+
+          ctx.fillStyle = groundSubColor;
+          ctx.fillRect(0, GROUND_Y + 14, VIRTUAL_WIDTH, VIRTUAL_HEIGHT - GROUND_Y - 14);
+
+          // Ground details / moving pebble marks
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.12)';
+          for (let gx = -this.groundScroll; gx < VIRTUAL_WIDTH + 60; gx += 40) {
+            ctx.beginPath();
+            ctx.ellipse(gx, GROUND_Y + 7, 6, 2.5, 0, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          // 7. Summer Monsoon Lightning Flash Overlay
+          if (this.lightningFlash > 0 && !prefersReducedMotion) {
+            ctx.save();
+            ctx.fillStyle = `rgba(255, 255, 255, ${this.lightningFlash * 0.7})`;
+            ctx.fillRect(0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
+            ctx.restore();
+          }
+        }
+
+        _drawHills(ctx, scrollOffset, color, baseHeight, amplitude, wavelength) {
+          ctx.save();
+          ctx.fillStyle = color;
+          ctx.beginPath();
+          ctx.moveTo(0, GROUND_Y);
+
+          for (let x = 0; x <= VIRTUAL_WIDTH; x += 15) {
+            const worldX = x + scrollOffset;
+            const y = GROUND_Y - baseHeight + Math.sin(worldX / wavelength * Math.PI * 2) * amplitude;
+            ctx.lineTo(x, y);
+          }
+
+          ctx.lineTo(VIRTUAL_WIDTH, GROUND_Y);
+          ctx.closePath();
+          ctx.fill();
+          ctx.restore();
+        }
+
+        _drawTrees(ctx, scrollOffset, seasonIndex, baseY) {
+          ctx.save();
+          const treeSpacing = 280;
+          for (let tx = - (scrollOffset % treeSpacing); tx < VIRTUAL_WIDTH + 80; tx += treeSpacing) {
+            ctx.translate(tx, baseY);
+
+            // Trunk
+            ctx.fillStyle = '#4e342e';
+            ctx.fillRect(-4, 0, 8, 30);
+
+            // Foliage based on season
+            if (seasonIndex === 0) { // Spring: Cherry Blossom
+              ctx.fillStyle = '#f48fb1';
+              ctx.beginPath();
+              ctx.arc(0, -14, 22, 0, Math.PI * 2);
+              ctx.fill();
+            } else if (seasonIndex === 1) { // Summer: Lush deep green
+              ctx.fillStyle = '#2e7d32';
+              ctx.beginPath();
+              ctx.arc(0, -14, 24, 0, Math.PI * 2);
+              ctx.fill();
+            } else if (seasonIndex === 2) { // Autumn: Orange/Red
+              ctx.fillStyle = '#e65100';
+              ctx.beginPath();
+              ctx.arc(0, -14, 22, 0, Math.PI * 2);
+              ctx.fill();
+            } else { // Winter: Bare snowy branches
+              ctx.strokeStyle = '#4e342e';
+              ctx.lineWidth = 3;
+              ctx.beginPath();
+              ctx.moveTo(0, 0); ctx.lineTo(-12, -20);
+              ctx.moveTo(0, 5); ctx.lineTo(12, -18);
+              ctx.stroke();
+              // Snow cap on branches
+              ctx.strokeStyle = '#ffffff';
+              ctx.lineWidth = 2.5;
+              ctx.beginPath();
+              ctx.moveTo(-10, -21); ctx.lineTo(-2, -12);
+              ctx.moveTo(4, -10); ctx.lineTo(11, -19);
+              ctx.stroke();
+            }
+
+            ctx.translate(-tx, -baseY);
+          }
+          ctx.restore();
+        }
+      }
+
+      // =========================================================================
+      // 9. MAIN GAME CONTROLLER & LOOP
+      // =========================================================================
+      class Game {
+        constructor() {
+          // DOM elements
+          this.canvas = document.getElementById('gameCanvas');
+          this.ctx = this.canvas.getContext('2d');
+          this.wrapper = document.getElementById('canvas-wrapper');
+
+          this.startOverlay = document.getElementById('start-overlay');
+          this.pauseOverlay = document.getElementById('pause-overlay');
+          this.btnStart = document.getElementById('btn-start');
+          this.btnResume = document.getElementById('btn-resume');
+          this.btnMute = document.getElementById('btn-mute');
+          this.btnPause = document.getElementById('btn-pause');
+          this.muteIcon = document.getElementById('mute-icon');
+          this.muteText = document.getElementById('mute-text');
+
+          // Touch & Mobile buttons
+          this.touchJump = document.getElementById('touch-jump');
+          this.touchDuck = document.getElementById('touch-duck');
+          this.mobileJump = document.getElementById('mobile-jump');
+          this.mobileDuck = document.getElementById('mobile-duck');
+
+          // Season Jump Buttons
+          this.seasonButtons = document.querySelectorAll('.btn-season');
+
+          // HUD elements
+          this.hudScore = document.getElementById('hud-score');
+          this.hudBestScore = document.getElementById('hud-best-score');
+          this.hudLives = document.getElementById('hud-lives');
+          this.hudSpeed = document.getElementById('hud-speed');
+          this.hudDonuts = document.getElementById('hud-donuts');
+          this.hudHats = document.getElementById('hud-hats');
+          this.hudSeasonName = document.getElementById('hud-season-name');
+          this.hudDay = document.getElementById('hud-day');
+          this.hudTemp = document.getElementById('hud-temp');
+          this.hudWeather = document.getElementById('hud-weather');
+
+          // Game Over overlay elements
+          this.gameoverOverlay = document.getElementById('gameover-overlay');
+          this.gameoverRecordBadge = document.getElementById('gameover-record-badge');
+          this.btnRestart = document.getElementById('btn-restart');
+          this.goScore = document.getElementById('go-score');
+          this.goDonuts = document.getElementById('go-donuts');
+          this.goHats = document.getElementById('go-hats');
+          this.goSpeed = document.getElementById('go-speed');
+
+          // Subsystems
+          this.sound = new SoundEngine();
+          this.particles = new ParticleSystem();
+          this.bg = new BackgroundManager();
+          this.gloop = new Gloop();
+          this.obstacles = new ObstacleManager();
+          this.donuts = new DonutManager();
+
+          // State
+          this.isRunning = false;
+          this.isPaused = false;
+          this.isGameOver = false;
+          this.isSuperAura = false;
+          this.distance = 0;
+          this.timeElapsed = 0;
+          this.lastMilestone = 0;
+          this.bestScore = 0;
+          this.currentSpeed = INITIAL_SPEED;
+
+          // HUD Text Caches (prevents DOM layout thrashing)
+          this._lastScoreText = null;
+          this._lastSpeedText = null;
+          this._lastDonutText = null;
+          this._lastHatsText = null;
+          this._lastDayText = null;
+          this._lastTempText = null;
+          this._lastWeatherText = null;
+          this._lastLivesText = null;
+
+          // Real current season detection
+          this.currentSeasonIndex = this.getRealCurrentSeason();
+          this.seasonTimer = 0; // 0 to SEASON_DURATION_SEC
+
+          // Screen shake
+          this.shakeTime = 0;
+          this.shakeMag = 0;
+
+          // Delta timing
+          this.lastTime = 0;
+
+          // Input states
+          this.jumpPressed = false;
+          this.duckPressed = false;
+
+          this.initStorage();
+          this.initResize();
+          this.initEventListeners();
+          this.updateHUDSeason();
+        }
+
+        getRealCurrentSeason() {
+          const month = new Date().getMonth(); // 0 = Jan, 9 = Oct
+          if (month >= 2 && month <= 4) return 0; // Spring (Mar, Apr, May)
+          if (month >= 5 && month <= 7) return 1; // Summer (Jun, Jul, Aug)
+          if (month >= 8 && month <= 10) return 2; // Autumn (Sep, Oct, Nov)
+          return 3; // Winter (Dec, Jan, Feb)
+        }
+
+        initStorage() {
+          try {
+            const saved = localStorage.getItem('gloop_runner_best_score');
+            if (saved !== null) {
+              this.bestScore = Math.floor(parseFloat(saved)) || 0;
+            }
+          } catch (e) {
+            this.bestScore = 0;
+          }
+          this.hudBestScore.textContent = `${this.bestScore} m`;
+        }
+
+        saveScore() {
+          if (this.distance > this.bestScore) {
+            this.bestScore = Math.floor(this.distance);
+            this.hudBestScore.textContent = `${this.bestScore} m`;
+            try {
+              localStorage.setItem('gloop_runner_best_score', this.bestScore.toString());
+            } catch (e) {}
+          }
+        }
+
+        initResize() {
+          const resize = () => {
+            const rect = this.wrapper.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            this.canvas.width = Math.round(rect.width * dpr);
+            this.canvas.height = Math.round(rect.height * dpr);
+            this.scaleRatio = (rect.width * dpr) / VIRTUAL_WIDTH;
+          };
+          window.addEventListener('resize', resize);
+          window.addEventListener('orientationchange', () => setTimeout(resize, 100));
+          resize();
+        }
+
+        initEventListeners() {
+          // Pre-warm Web Audio immediately on first user gesture
+          window.addEventListener('pointerdown', () => this.sound.init(), { once: true });
+          window.addEventListener('keydown', () => this.sound.init(), { once: true });
+
+          // Start game handler
+          const startGame = () => {
+            if (this.isRunning) return;
+            this.sound.init();
+            this.startOverlay.classList.remove('visible');
+            this.isRunning = true;
+            this.lastTime = performance.now();
+            requestAnimationFrame((t) => this.loop(t));
+          };
+          this.btnStart.addEventListener('click', startGame);
+          this.btnStart.addEventListener('pointerdown', (e) => { e.stopPropagation(); startGame(); });
+          this.startOverlay.addEventListener('pointerdown', (e) => { startGame(); });
+
+          // Resume button & overlay tap
+          this.btnResume.addEventListener('click', () => this.togglePause());
+          this.btnResume.addEventListener('pointerdown', (e) => { e.stopPropagation(); this.togglePause(); });
+          this.pauseOverlay.addEventListener('pointerdown', (e) => { this.togglePause(); });
+
+          // Restart button & gameover overlay tap
+          this.btnRestart.addEventListener('click', () => this.restart());
+          this.btnRestart.addEventListener('pointerdown', (e) => { e.stopPropagation(); this.restart(); });
+          this.gameoverOverlay.addEventListener('pointerdown', (e) => { this.restart(); });
+
+          // Mute toggle
+          this.btnMute.addEventListener('click', () => {
+            this.sound.init();
+            const muted = this.sound.toggleMute();
+            this.muteIcon.textContent = muted ? '🔇' : '🔊';
+            this.muteText.textContent = muted ? 'Muted' : 'Sound';
+          });
+
+          // Pause toggle
+          this.btnPause.addEventListener('click', () => this.togglePause());
+
+          // Keyboard listeners
+          window.addEventListener('keydown', (e) => {
+            if (e.repeat) return; // Prevent OS key repeat delay and stutter!
+            this.sound.init();
+            if (this.isGameOver) {
+              if (e.code === 'Space' || e.code === 'ArrowUp') {
+                e.preventDefault();
+                this.restart();
+              }
+              return;
+            }
+
+            if (e.code === 'Space' || e.code === 'ArrowUp') {
+              e.preventDefault();
+              if (!this.isRunning) {
+                startGame();
+              } else if (!this.isPaused) {
+                this.gloop.jump(this.sound, this.particles);
+              }
+            } else if (e.code === 'ArrowDown' || e.code === 'KeyS') {
+              e.preventDefault();
+              if (this.isRunning && !this.isPaused) {
+                this.duckPressed = true;
+                this.gloop.duck(true, this.sound);
+              }
+            } else if (e.code === 'KeyP' || e.code === 'Escape') {
+              e.preventDefault();
+              if (this.isRunning) this.togglePause();
+            } else if (e.code === 'KeyM') {
+              this.btnMute.click();
+            }
+          });
+
+          window.addEventListener('keyup', (e) => {
+            if (e.code === 'Space' || e.code === 'ArrowUp') {
+              if (this.gloop.vy < -550) {
+                this.gloop.vy = -550; // Variable jump height: clean cut, but guarantees clearing ground obstacles!
+              }
+            } else if (e.code === 'ArrowDown' || e.code === 'KeyS') {
+              this.duckPressed = false;
+              this.gloop.duck(false, this.sound);
+            }
+          });
+
+          // Unified Mobile Touch Controls (Thumb Buttons & Bottom Control Deck)
+          const cutJump = () => {
+            if (this.gloop.vy < -550) {
+              this.gloop.vy = -550;
+            }
+          };
+
+          const handleJumpTrigger = (e) => {
+            if (e) e.preventDefault();
+            this.sound.init();
+            if (this.isGameOver) {
+              this.restart();
+              return;
+            }
+            if (!this.isRunning) {
+              startGame();
+            } else if (!this.isPaused) {
+              this.gloop.jump(this.sound, this.particles);
+            }
+          };
+
+          const startDuck = (e) => {
+            if (e) e.preventDefault();
+            this.sound.init();
+            if (this.isRunning && !this.isPaused && !this.isGameOver) {
+              this.touchDuck.classList.add('pressed');
+              if (this.mobileDuck) this.mobileDuck.classList.add('pressed');
+              this.gloop.duck(true, this.sound);
+            }
+          };
+
+          const endDuck = (e) => {
+            if (e) e.preventDefault();
+            this.touchDuck.classList.remove('pressed');
+            if (this.mobileDuck) this.mobileDuck.classList.remove('pressed');
+            this.gloop.duck(false, this.sound);
+          };
+
+          // Corner touch buttons (Landscape mode)
+          this.touchJump.addEventListener('pointerdown', handleJumpTrigger);
+          this.touchJump.addEventListener('pointerup', cutJump);
+          this.touchJump.addEventListener('pointercancel', cutJump);
+
+          this.touchDuck.addEventListener('pointerdown', startDuck);
+          this.touchDuck.addEventListener('pointerup', endDuck);
+          this.touchDuck.addEventListener('pointercancel', endDuck);
+
+          // Dedicated mobile bottom deck buttons (Portrait mode)
+          if (this.mobileJump) {
+            this.mobileJump.addEventListener('pointerdown', handleJumpTrigger);
+            this.mobileJump.addEventListener('pointerup', cutJump);
+            this.mobileJump.addEventListener('pointercancel', cutJump);
+          }
+          if (this.mobileDuck) {
+            this.mobileDuck.addEventListener('pointerdown', startDuck);
+            this.mobileDuck.addEventListener('pointerup', endDuck);
+            this.mobileDuck.addEventListener('pointercancel', endDuck);
+          }
+
+          // Full-Screen Canvas Tap Zones:
+          // Left 35% of screen = Duck, Right 65% of screen = Jump / Double Jump
+          this.wrapper.addEventListener('pointerdown', (e) => {
+            if (e.target.closest('button')) return;
+            this.sound.init();
+            if (this.isGameOver) {
+              this.restart();
+              return;
+            }
+            if (!this.isRunning) {
+              startGame();
+              return;
+            }
+            if (this.isPaused) return;
+
+            const rect = this.wrapper.getBoundingClientRect();
+            const clickRatio = (e.clientX - rect.left) / rect.width;
+            if (clickRatio < 0.35) {
+              // Left side tap: quick duck slide
+              this.gloop.duck(true, this.sound);
+              setTimeout(() => {
+                this.gloop.duck(false, this.sound);
+              }, 450);
+            } else {
+              // Right side tap: Jump / Double Jump
+              this.gloop.jump(this.sound, this.particles);
+            }
+          });
+          this.wrapper.addEventListener('pointerup', cutJump);
+
+          // Season Preview buttons
+          this.seasonButtons.forEach((btn) => {
+            btn.addEventListener('click', (e) => {
+              const target = parseInt(btn.dataset.season, 10);
+              this.setSeason(target);
+            });
+          });
+        }
+
+        setSeason(seasonIdx) {
+          this.currentSeasonIndex = seasonIdx;
+          this.seasonTimer = 0;
+          this.updateHUDSeason();
+          this.particles.initWeatherPool();
+        }
+
+        togglePause() {
+          if (!this.isRunning) return;
+          this.isPaused = !this.isPaused;
+          if (this.isPaused) {
+            this.pauseOverlay.classList.add('visible');
+          } else {
+            this.pauseOverlay.classList.remove('visible');
+            this.lastTime = performance.now();
+            requestAnimationFrame((t) => this.loop(t));
+          }
+        }
+
+        updateHUDSeason() {
+          const s = SEASONS_DATA[this.currentSeasonIndex];
+          this.hudSeasonName.innerHTML = `${s.icon} ${s.name}`;
+
+          // Active state on season jumper buttons
+          this.seasonButtons.forEach((b) => {
+            b.classList.toggle('active', parseInt(b.dataset.season, 10) === this.currentSeasonIndex);
+          });
+        }
+
+        applyScreenShake(mag = 8) {
+          if (prefersReducedMotion) return;
+          this.shakeMag = mag;
+          this.shakeTime = 0.3;
+        }
+
+        loop(timestamp) {
+          if (!this.isRunning || this.isPaused || this.isGameOver) return;
+
+          if (!this.lastTime) {
+            this.lastTime = timestamp;
+          }
+          const elapsed = (timestamp - this.lastTime) / 1000;
+          this.lastTime = timestamp;
+
+          // Smooth clamped delta time for stable 60/120fps motion
+          const dt = Math.min(0.033, Math.max(0.001, elapsed));
+
+          this.update(dt);
+          this.render();
+
+          if (this.isRunning && !this.isPaused && !this.isGameOver) {
+            requestAnimationFrame((t) => this.loop(t));
+          }
+        }
+
+        updateLivesHUD() {
+          const alive = Math.max(0, this.gloop.lives);
+          const dead = Math.max(0, 3 - alive);
+          const livesText = '❤️'.repeat(alive) + '🖤'.repeat(dead);
+          if (this._lastLivesText !== livesText) {
+            this.hudLives.textContent = livesText;
+            this._lastLivesText = livesText;
+          }
+        }
+
+        triggerGameOver() {
+          if (this.isGameOver) return;
+          this.isGameOver = true;
+          this.isRunning = false;
+          this.sound.playGameOver();
+
+          // Fill Game Over overlay modal
+          this.goScore.textContent = `${Math.floor(this.distance)} m`;
+          this.goDonuts.textContent = this.donuts.totalCollected;
+          this.goHats.textContent = `${Math.min(5, this.gloop.hatsCount)}/5`;
+          this.goSpeed.textContent = (this.currentSpeed / INITIAL_SPEED).toFixed(1) + 'x';
+
+          const isNewBest = this.distance >= this.bestScore && this.distance > 50;
+          this.gameoverRecordBadge.style.display = isNewBest ? 'inline-block' : 'none';
+
+          this.gameoverOverlay.classList.add('visible');
+        }
+
+        restart() {
+          this.isGameOver = false;
+          this.gameoverOverlay.classList.remove('visible');
+
+          // Reset trackers
+          this.distance = 0;
+          this.timeElapsed = 0;
+          this.lastMilestone = 0;
+          this.isSuperAura = false;
+          this.currentSpeed = INITIAL_SPEED;
+
+          // Clear HUD text caches
+          this._lastScoreText = null;
+          this._lastSpeedText = null;
+          this._lastDonutText = null;
+          this._lastHatsText = null;
+          this._lastDayText = null;
+          this._lastTempText = null;
+          this._lastWeatherText = null;
+          this._lastLivesText = null;
+
+          // Re-instantiate entities
+          this.particles = new ParticleSystem();
+          this.gloop = new Gloop();
+          this.obstacles = new ObstacleManager();
+          this.donuts = new DonutManager();
+
+          // Reset HUD stats
+          this.updateLivesHUD();
+          this.hudScore.textContent = '0 m';
+          this.hudSpeed.textContent = '1.0x';
+          this.hudDonuts.textContent = '0';
+          this.hudHats.textContent = '0/5';
+
+          this.isRunning = true;
+          this.lastTime = 0;
+          requestAnimationFrame((t) => this.loop(t));
+        }
+
+        update(dt) {
+          this.timeElapsed += dt;
+
+          // Dynamic speed scaling: increases with BOTH distance and elapsed time
+          const speedFromDist = this.distance * 0.16;
+          const speedFromTime = this.timeElapsed * 2.2;
+          this.currentSpeed = Math.min(MAX_SPEED, INITIAL_SPEED + speedFromDist + speedFromTime);
+
+          // Distance travelled
+          this.distance += (this.currentSpeed * dt) * 0.1;
+          this.saveScore();
+
+          // Milestone celebrations & comic shouts every 250m
+          const currentMilestone = Math.floor(this.distance / 250) * 250;
+          if (currentMilestone > 0 && currentMilestone > this.lastMilestone) {
+            this.lastMilestone = currentMilestone;
+            const comicShouts = [
+              `${currentMilestone}m! WOOHOO!`,
+              `${currentMilestone}m! SUPER GLOOP!`,
+              `${currentMilestone}m! UNSTOPPABLE!`,
+              `${currentMilestone}m! SPEED RUSH!`,
+              `${currentMilestone}m! LEGENDARY!`
+            ];
+            const shout = comicShouts[(currentMilestone / 250 - 1) % comicShouts.length];
+            this.sound.playMilestoneFanfare();
+            this.particles.spawnConfetti(this.gloop.x + 30, this.gloop.y - this.gloop.getVisualHeight());
+            this.particles.addFloatingText(shout, this.gloop.x + 20, this.gloop.y - this.gloop.getVisualHeight() - 30, '#ffd700', 26);
+          }
+
+          // Golden Super Aura check when breaking previous high score
+          if (this.distance > this.bestScore && this.bestScore > 100) {
+            if (!this.isSuperAura) {
+              this.isSuperAura = true;
+              this.particles.spawnConfetti(this.gloop.x + 20, this.gloop.y - 40);
+              this.particles.addFloatingText('NEW RECORD! 👑', this.gloop.x + 20, this.gloop.y - this.gloop.getVisualHeight() - 35, '#ffea00', 28);
+              this.sound.playMilestoneFanfare();
+            }
+          }
+
+          // Season progression (cycle of 36s each)
+          this.seasonTimer += dt;
+          if (this.seasonTimer >= SEASON_DURATION_SEC) {
+            this.seasonTimer = 0;
+            this.currentSeasonIndex = (this.currentSeasonIndex + 1) % 4;
+            this.updateHUDSeason();
+          }
+
+          // Season transition factor (last 4s blends into next season)
+          let transitionFactor = 0;
+          const blendStart = SEASON_DURATION_SEC - SEASON_TRANSITION_SEC;
+          if (this.seasonTimer >= blendStart) {
+            transitionFactor = (this.seasonTimer - blendStart) / SEASON_TRANSITION_SEC;
+          }
+          const nextSeasonIndex = (this.currentSeasonIndex + 1) % 4;
+
+          // Summer monsoon storm condition (second half of summer)
+          const isSummerMonsoon = (this.currentSeasonIndex === 1 && this.seasonTimer > 18.0);
+
+          // Update HUD stats (cached to eliminate 60fps DOM thrashing)
+          const scoreText = `${Math.floor(this.distance)} m`;
+          if (this._lastScoreText !== scoreText) {
+            this.hudScore.textContent = scoreText;
+            this._lastScoreText = scoreText;
+          }
+
+          this.updateLivesHUD();
+
+          const speedText = `${(this.currentSpeed / INITIAL_SPEED).toFixed(1)}x`;
+          if (this._lastSpeedText !== speedText) {
+            this.hudSpeed.textContent = speedText;
+            this._lastSpeedText = speedText;
+          }
+
+          const donutText = `${this.donuts.totalCollected}`;
+          if (this._lastDonutText !== donutText) {
+            this.hudDonuts.textContent = donutText;
+            this._lastDonutText = donutText;
+          }
+
+          const hatsText = `${Math.min(5, this.gloop.hatsCount)}/5`;
+          if (this._lastHatsText !== hatsText) {
+            this.hudHats.textContent = hatsText;
+            this._lastHatsText = hatsText;
+          }
+
+          // Day calculation (e.g. 1 day per 120m)
+          const dayNumber = 1 + Math.floor(this.distance / 120);
+          const dayText = `Day ${dayNumber}`;
+          if (this._lastDayText !== dayText) {
+            this.hudDay.textContent = dayText;
+            this._lastDayText = dayText;
+          }
+
+          // Dynamic seasonal temperature & description
+          const curSeason = SEASONS_DATA[this.currentSeasonIndex];
+          const tempVariation = Math.sin(this.distance * 0.05) * 2;
+          const curTemp = Math.round(curSeason.baseTemp + tempVariation);
+          const tempText = `${curTemp}°C`;
+          if (this._lastTempText !== tempText) {
+            this.hudTemp.textContent = tempText;
+            this._lastTempText = tempText;
+          }
+
+          const weatherText = (this.currentSeasonIndex === 1 && isSummerMonsoon)
+            ? curSeason.weatherStormDesc
+            : curSeason.weatherDesc;
+          if (this._lastWeatherText !== weatherText) {
+            this.hudWeather.textContent = weatherText;
+            this._lastWeatherText = weatherText;
+          }
+
+          // Update subsystems (pass sound & particles to Gloop for buffered takeoff)
+          this.bg.update(dt, this.currentSpeed, isSummerMonsoon);
+          this.particles.update(dt, this.currentSeasonIndex, isSummerMonsoon);
+          this.gloop.update(dt, this.currentSpeed, this.sound, this.particles);
+          this.obstacles.update(dt, this.currentSpeed, this.currentSeasonIndex, this.particles);
+          this.donuts.update(dt, this.currentSpeed);
+
+          // Collisions
+          const gloopBox = this.gloop.getHitbox();
+          this.obstacles.checkCollision(
+            gloopBox,
+            this.gloop,
+            this.sound,
+            this.particles,
+            (remainingLives) => {
+              this.applyScreenShake(8);
+              this.updateLivesHUD();
+            },
+            () => {
+              this.triggerGameOver();
+            }
+          );
+
+          this.donuts.checkCollection(
+            gloopBox,
+            this.gloop,
+            this.sound,
+            this.particles,
+            (pts) => {
+              this.distance += pts;
+              this.saveScore();
+            },
+            (hatIdx) => {
+              this.applyScreenShake(5);
+            }
+          );
+
+          // Screen shake decay
+          if (this.shakeTime > 0) {
+            this.shakeTime -= dt;
+          }
+        }
+
+        render() {
+          const ctx = this.ctx;
+
+          // Clear frame
+          ctx.save();
+          ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+          // Apply High-DPI & Virtual scale transform (Zero forced reflow!)
+          const scaleX = this.canvas.width / VIRTUAL_WIDTH;
+          const scaleY = this.canvas.height / VIRTUAL_HEIGHT;
+          ctx.scale(scaleX, scaleY);
+
+          // Screen shake
+          if (this.shakeTime > 0 && !prefersReducedMotion) {
+            const shakeRatio = this.shakeTime / 0.3;
+            const ox = (Math.random() - 0.5) * this.shakeMag * shakeRatio;
+            const oy = (Math.random() - 0.5) * this.shakeMag * shakeRatio;
+            ctx.translate(ox, oy);
+          }
+
+          // 1. Draw Background & Seasonal Hills
+          const blendStart = SEASON_DURATION_SEC - SEASON_TRANSITION_SEC;
+          const transitionFactor = this.seasonTimer >= blendStart
+            ? (this.seasonTimer - blendStart) / SEASON_TRANSITION_SEC
+            : 0;
+          const nextSeasonIndex = (this.currentSeasonIndex + 1) % 4;
+          const isSummerMonsoon = (this.currentSeasonIndex === 1 && this.seasonTimer > 18.0);
+
+          this.bg.draw(ctx, this.currentSeasonIndex, nextSeasonIndex, transitionFactor, isSummerMonsoon);
+
+          // 2. Draw Weather Particles (behind characters)
+          this.particles.drawWeather(ctx);
+
+          // 3. Draw Speed Lines if running fast
+          this.particles.drawSpeedLines(ctx, this.currentSpeed / INITIAL_SPEED);
+
+          // 4. Draw Donuts
+          this.donuts.draw(ctx);
+
+          // 5. Draw Obstacles
+          this.obstacles.draw(ctx);
+
+          // 6. Draw Gloop (with super aura if active)
+          this.gloop.draw(ctx, this.isSuperAura);
+
+          // 7. Draw Sparkles & Comic Floating Text & Confetti (foreground)
+          this.particles.drawEffects(ctx);
+
+          ctx.restore();
+        }
+      }
+
+      // Initialize game on load
+      window.addEventListener('DOMContentLoaded', () => {
+        new Game();
+      });
+    })();
+  </script>
+</body>
+</html>
