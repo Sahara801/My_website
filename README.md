@@ -1,149 +1,93 @@
-# 🌻 Serene Tasks — Mindful Journal & To-Do
+# 🏃 Gloop's Endless Adventure
 
-> A complete, responsive, single-page To-Do List web application with a warm, calming, rounded UI inspired by modern journaling apps. Built entirely with **semantic HTML5**, **modern CSS3**, and **vanilla JavaScript** (no external frameworks or heavy libraries).
+> A fast-paced, goofy HTML5 Canvas endless runner built from scratch with pure **Vanilla JavaScript**, **HTML5 Canvas**, and the **Web Audio API**. Built with **zero external image or audio files** — all graphics are rendered procedurally and all sound effects are synthesized in real time.
 
 ---
 
-## 🚀 Quick Start / How to Run
+## 🎮 Play Live Demo (Try It in Your Browser)
 
-Because Serene Tasks is built with 100% vanilla web standards, you can run it immediately using any of these methods:
+Recruiters and visitors can launch and play the game directly on any device (Desktop, iPhone, Android, Tablet):
 
-### Option 1: Double-Click (Direct in Browser)
-Simply double-click [`index.html`](file:///c:/Users/lenovo/OneDrive%20-%20Tribhuvan%20University/Desktop/My_website/index.html) in your file manager to open it in Chrome, Edge, Safari, Firefox, or Brave.
+[![Play on Netlify](https://img.shields.io/badge/Play%20Live-Netlify%20Demo-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)](https://frabjous-empanada-9a1bb7.netlify.app/)
+[![Play on GitHub Pages](https://img.shields.io/badge/Play%20Live-GitHub%20Pages-222222?style=for-the-badge&logo=github&logoColor=white)](https://sahara801.github.io/My_website/)
 
-### Option 2: Local HTTP Server (Recommended)
-Running through a local web server ensures full support for local file drag-and-drop, Web Audio chime synthesis, and Browser Notifications API:
+* **Primary Netlify Live Site:** [https://frabjous-empanada-9a1bb7.netlify.app/](https://frabjous-empanada-9a1bb7.netlify.app/)
+* **GitHub Pages Mirror:** [https://sahara801.github.io/My_website/](https://sahara801.github.io/My_website/)
 
-#### Using Python (Built into most systems):
+---
+
+## ✨ Key Engineering & Technical Highlights
+
+This project was built to demonstrate deep core web engineering principles without relying on third-party game engines (like Phaser, Pixi, or Unity):
+
+### 1. 🎨 100% Procedural Graphics (Zero Image Downloads)
+- Every sprite and animation (Gloop the blob, googly eyes with physics damping, seasonal obstacles, parallax rolling hills, and weather particles) is drawn mathematically using Canvas 2D Bézier curves, arcs, and gradients.
+- **Dynamic Squash & Stretch:** Gloop elongates during jumps and squashes wide upon landing for a bouncy cartoon aesthetic.
+- **Googly Eye Physics:** Gloop's pupils have momentum with spring-damping algorithms that react to jumping and running inertia.
+
+### 2. 🎵 Real-Time Web Audio Synthesis (Zero MP3/WAV Downloads)
+- Every jump, bounce, bonk, and collect sound is generated on-the-fly using the browser's native **Web Audio API** (`AudioContext`, `OscillatorNode`, `GainNode`, and frequency ramps).
+- **Pitch Scaling:** As Gloop grows larger over time, his voice and sound frequencies automatically pitch down dynamically.
+
+### 3. 📱 Dual-Platform Responsive Architecture
+- **Desktop View:** Classic arcade cabinet frame with keyboard shortcuts (<kbd>Space</kbd> / <kbd>↑</kbd> to jump, double-tap for double-jump, <kbd>↓</kbd> to duck, <kbd>P</kbd> to pause, <kbd>M</kbd> to mute).
+- **Mobile View (iOS & Android):** Dynamic `100dvh` fullscreen viewport, compact 1-row HUD, dedicated chubby touch buttons (`[🛡️ DUCK]` and `[🦘 JUMP]`), multi-touch screen zones, and landscape mode support.
+- **Retina Resolution:** Automatically scales canvas buffers to `window.devicePixelRatio` for razor-sharp rendering on 4K and mobile OLED screens.
+
+### 4. 🌦️ Dynamic Seasons & Weather System
+- The game checks the user's real-world calendar month (`new Date().getMonth()`) to start in the real current season.
+- Smoothly blends between **Spring** (drizzle & blossoms), **Summer** (monsoon & lightning storms), **Autumn** (wind gusts & falling leaves), and **Winter** (snowfall & icy frost).
+
+### 5. ⏱️ 60 FPS Delta-Time Physics Loop
+- Uses `requestAnimationFrame` with variable time-stepping (`dt`) clamped against tab-switch spikes to ensure consistent gameplay speed across 60Hz, 120Hz, and 144Hz displays.
+- Hitbox calculations use conservative Axis-Aligned Bounding Box (AABB) intersection math with forgiveness padding for fair gameplay.
+
+---
+
+## 🕹️ Controls Guide
+
+| Action | Desktop (Keyboard) | Mobile / Phone |
+| :--- | :--- | :--- |
+| **Jump** | <kbd>Space</kbd> or <kbd>↑ Arrow</kbd> | Tap **`[🦘 JUMP]`** or tap right 65% of screen |
+| **Double Jump** | Double-tap <kbd>Space</kbd> or <kbd>↑</kbd> | Double-tap **`[🦘 JUMP]`** |
+| **Duck / Slide** | Hold <kbd>↓ Arrow</kbd> | Hold **`[🛡️ DUCK]`** or hold left 35% of screen |
+| **Pause / Resume** | <kbd>P</kbd> | Tap HUD Pause button |
+| **Mute / Unmute** | <kbd>M</kbd> | Tap HUD Mute button |
+| **Season Jump** | Keys <kbd>1</kbd>–<kbd>4</kbd> | Tap season indicator |
+
+---
+
+## 🚀 How to Run Locally
+
+Because this game is completely self-contained with zero dependencies, you can run it in seconds:
+
+### Method 1: Direct in Browser
+Simply double-click [`index.html`](index.html) or [`gloop_runner.html`](gloop_runner.html) to open directly in Google Chrome, Microsoft Edge, Safari, Firefox, or Brave.
+
+### Method 2: Local HTTP Server
 ```bash
+# Using Python
 python -m http.server 8000
-```
-Then visit: [http://localhost:8000](http://localhost:8000)
 
-#### Using Node.js:
-```bash
-npx serve .
+# Open in browser:
+http://localhost:8000
 ```
 
-#### Using the bundled `.bat` launcher:
-Run [`run_server.bat`](file:///c:/Users/lenovo/OneDrive%20-%20Tribhuvan%20University/Desktop/My_website/run_server.bat) to launch a local server immediately.
-
 ---
 
-## 🎨 1. Design System & Aesthetics
-
-Serene Tasks was designed from the ground up to feel warm, tactile, and peaceful—like writing in a thoughtfully crafted journal:
-
-- **Colors (Defined as CSS Variables in `style.css`):**
-  - **Page Background:** `#E0DBD9` (Dark mode: cozy charcoal `#191716`)
-  - **App Surface:** `#F3F1EE` (Dark mode: espresso `#242220`)
-  - **Cards:** `#FFFFFF` (Dark mode: `#2D2A28`)
-  - **Primary (Marigold Yellow):** `#FDB92B`, Light tint `#FFC84F`, Hover `#E5A520`
-  - **Success / Calm (Olive Green):** `#8AA12E`
-  - **Danger / Sad (Clay Brown):** `#744337`
-  - **Neutral / Anxious (Grey-Olive):** `#7A7562`
-  - **Category Pastel Tints:**
-    - Personal: Soft Pink `#F4D0CA`
-    - Work: Calming Lavender `#DCD3FA`
-    - Family: Warm Beige `#D3C9BA`
-    - Health: Sage Green `#D9E6C3`
-    - Study: Peach Gold `#FFE3B3`
-  - **Text:** Primary `#1F1F1F`, Secondary `#5E5B58`, Muted `#8A8580`
-- **Typography:**
-  - Google Font: `Plus Jakarta Sans` with high contrast ratios (exceeding WCAG 4.5:1).
-  - Large bold greetings (32px), massive stat numbers (72px), medium section headers (22px), and legible helpers (13–14px).
-- **Shapes & Transitions:**
-  - Very rounded corners: Cards `24px`, inputs `16px`, buttons & chips `9999px` pill-shaped.
-  - Soft multi-stop shadows and smooth 200–250ms transitions with a gentle hover lift (`translateY(-2px)`).
-  - Respects `prefers-reduced-motion` for accessibility.
-
----
-
-## 📱 2. Responsive Layouts
-
-### Desktop (1024px+)
-- **Two-Panel Centered Layout:**
-  - **Left Panel (65% width):** Interactive Week Strip, Dynamic Time-of-Day Hero Card, Quick Add categories scroller, Search & Sort toolbar, and full Task List.
-  - **Right Panel (35% width):** Sticky companion dashboard featuring the Weekly Mindful Rhythm stat card, animated vertical pill bars (Emotions/Harmony chart), streak badge, and mindful quotes.
-  - **Top Navigation Bar:** Quick navigation tabs for **Home**, **Calendar**, **Stats**, and **Profile**, plus live digital clock and user avatar.
-
-### Mobile & Tablet (< 1024px)
-- **Bottom Navigation Bar:**
-  - [🏠 Home] [📅 Calendar] [🟡 Large Floating (+) Action Button] [📊 Stats] [👤 Profile]
-- Mobile greeting bar with user avatar, personalized time greeting, and live date/time badge.
-- Bottom sheet modal interactions for adding and editing tasks.
-
----
-
-## 🌟 3. Complete Feature Breakdown
-
-### Home Screen
-- **Time-Based Greeting:** "Good morning", "Good afternoon", or "Good evening" synced with live local time, user name, and custom avatar emoji.
-- **Interactive Week Strip:** Mon–Sun date circles with month navigation (`<` and `>`), a "Today" quick-jump button, dot indicators for days with scheduled tasks, and single-click date filtering.
-- **Hero Card Carousel:**
-  - *Dynamic Time-of-Day Card:* Changes visual tint and copy by time of day with a friendly animated smiling sun SVG illustration.
-  - *Mindful Thought Card:* Daily intention quote and streak tracker.
-- **Quick Add Row:** One-tap category chips (Personal, Work, Family, Health, Study) that launch the modal with the category pre-selected.
-- **Filter Chips:** `All`, `Today`, `Upcoming`, `Completed`, `Overdue`, plus a "See all" reset link.
-- **Search & Sort:** Live search across title, description, and categories; sort by Due Date (Earliest/Latest), Priority, Category, or Recently Added.
-
-### Task Management
-- **Rich Task Schema:** ID, Title, Description, Category, Priority (Low/Medium/High), Due Date, Due Time, Reminder (None, At time, 5m, 15m, 30m, 1h, 1d), Repeat (None, Daily, Weekly, Monthly), Subtasks checklist, Completed flag, Pinned flag, Timestamps.
-- **Card Badges:** Category tint chip, Priority tag, Relative Date (`Today`, `Tomorrow`, `Yesterday`, or formatted date), Dynamic Countdown badge (`Due in 2h 15m` or `Overdue by 1h`).
-- **Subtasks & Progress Bar:** Visual progress fill with inline checklist toggle.
-- **Actions:** Pin to top, Edit, Duplicate, Delete, Mark complete / undo, Clear all completed.
-- **HTML5 Drag-and-Drop:** Grab the `⋮⋮` handle to reorder tasks in real time with persisted list order.
-- **Recurring Tasks:** Auto-generates the next instance (Daily `+1d`, Weekly `+7d`, Monthly `+1m`) when marked complete.
-
-### Custom Alerts & Notifications (Zero Browser `alert()` / `confirm()`)
-1. **Toast Notifications:** Fixed top-right (desktop) / top (mobile) with auto-dismiss (3.8s), close button, and an **[Undo]** button when deleting a task.
-2. **Confirmation Dialogs:** Custom modal dialogs for task deletion, clearing completed tasks, and data reset.
-3. **Harmonic Bell Chime:** Synthesized in real time using the browser's native **Web Audio API** (calming sine waves at 587Hz & 880Hz)—requires no external MP3 files!
-4. **Reminder Alert Modal:** Prominent popup with 3 buttons: `✓ Mark Done`, `⏰ Snooze 10m`, and `Dismiss`.
-5. **Browser Push Notifications:** Polite explanatory prompt with one-click permission request.
-6. **Overdue Alert Banner:** Dismissible banner alerting you to overdue tasks with a direct "Review Now" shortcut.
-7. **Confetti Celebration:** Canvas particle celebration animation when all tasks for today are completed!
-
-### Monthly Calendar Screen
-- Full monthly calendar grid with month navigation and "Today" button.
-- Date cells display task indicators (colored dots).
-- Selecting any day shows all tasks scheduled for that specific date below, with full task controls and an "+ Add for This Day" button.
-
-### Stats Screen (Mindful Insights)
-- Giant 72px counter: Completed tasks with motivational caption.
-- **Vertical Pill Bars:** Visual harmony meters for **Completed %**, **Pending %**, **Overdue %**, and **Today's Goal %** with smooth CSS animations.
-- Metric cards: Current Streak, Completion Rate, Pending Tasks, Overdue Count.
-- **7-Day Bar Chart:** Dynamic activity histogram tracking completions over the past 7 days.
-- Large yellow "+ Create a New Task" CTA button.
-
-### Profile & Settings Screen
-- Edit display name and choose from 8 cute avatar emojis (🌻, 🌿, 🌸, ☕, ✨, 🐱, 🎨, 🧘).
-- **Theme Switcher:** Seamless toggle between Warm Light Journal cream and Cozy Dark espresso.
-- **Time Format:** Toggle between 12-hour (AM/PM) and 24-hour display.
-- **Sound Toggle:** Turn audio bell chime on or off.
-- **Default Reminder Lead:** Set the default reminder time for new tasks.
-- **Data Export & Import:** Download your entire task library as a JSON file (`serene-tasks-backup.json`) and restore it on any device.
-- **Reset All Data:** Erase custom data with confirmation and restore fresh sample tasks.
-
----
-
-## 🗂️ Project Structure
+## 📂 Project Structure
 
 ```text
 My_website/
-├── index.html        # Semantic HTML5 single-page application structure & modals
-├── style.css         # Complete design system, animations, dark mode, responsive layouts
-├── script.js         # Modular vanilla JS (State, Storage, Audio, Confetti, Reminders, Views)
-├── README.md         # Comprehensive documentation and run guide
-├── run_server.bat    # Optional Windows batch script to launch local server
-└── launch_todo.bat   # Optional shortcut to launch in browser
+├── index.html         # Main entry point (Gloop Endless Runner)
+├── gloop_runner.html  # Standalone single-file game copy
+├── netlify.toml       # Netlify build & redirect routing configuration
+├── _redirects         # Netlify clean URL rewrite rules (/play, /game)
+├── README.md          # Project documentation & portfolio overview
+└── serene_tasks.html  # Archived mindful journaling web app
 ```
 
 ---
 
-## ♿ Accessibility & Standards
-
-- **Semantic Elements:** `<header>`, `<main>`, `<section>`, `<aside>`, `<nav>`, `<article>`, `<button>`.
-- **ARIA Attributes:** `role="tab"`, `role="dialog"`, `role="alertdialog"`, `role="status"`, `aria-selected`, `aria-modal="true"`.
-- **Keyboard Navigation:** Full Tab/Shift+Tab focus trap in dialogs, `Esc` key to close modals.
-- **Motion Sensitivity:** All animations disabled automatically when the user has `prefers-reduced-motion: reduce` enabled in their operating system.
+## 📄 License
+Open source and available under the MIT License.
